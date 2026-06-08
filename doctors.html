@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>推荐医生 · 百度健康·医选</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #060d1a;
+    color: #e8d49a;
+    min-height: 100vh;
+    max-width: 430px;
+    margin: 0 auto;
+  }
+
+  :root {
+    --gold-dark: #8b6914;
+    --gold-mid: #c9a84c;
+    --gold-light: #f5d87e;
+    --bg-card: #0c1830;
+    --text-primary: #f5ecd0;
+    --text-sub: #8a9bb5;
+    --divider: rgba(201,168,76,0.15);
+  }
+
+  .gold-text {
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+  }
+
+  /* 导航栏 */
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: #060d1a;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--divider);
+  }
+  .navbar-back {
+    font-size: 28px;
+    color: var(--gold-light);
+    line-height: 1;
+    cursor: pointer;
+  }
+  .navbar-title {
+    font-size: 17px;
+    font-weight: 600;
+  }
+  .navbar-right { width: 28px; }
+
+  /* 页面标题 */
+  .page-header {
+    padding: 18px 16px 12px;
+  }
+  .page-header-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .page-header-sub {
+    font-size: 12px;
+    color: var(--text-sub);
+  }
+  .page-header-count {
+    font-size: 12px;
+    color: var(--gold-mid);
+    margin-top: 4px;
+  }
+
+  /* 科室筛选 */
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    padding: 8px 16px 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .filter-btn {
+    flex-shrink: 0;
+    padding: 6px 14px;
+    font-size: 12px;
+    background: var(--bg-card);
+    color: var(--text-sub);
+    border: 1px solid var(--divider);
+    border-radius: 14px;
+    cursor: pointer;
+  }
+  .filter-btn.active {
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold-mid));
+    color: #060d1a;
+    border-color: var(--gold-mid);
+    font-weight: 600;
+  }
+
+  /* 医生列表 */
+  .doctor-list { padding: 0 16px 24px; }
+  .doctor-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--divider);
+  }
+  .doctor-item:last-child { border-bottom: none; }
+  .doctor-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold-mid));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+  }
+  .doctor-info { flex: 1; min-width: 0; }
+  .doctor-name-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+  .doctor-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .doctor-title-tag {
+    font-size: 10px;
+    color: var(--gold-mid);
+    border: 1px solid var(--gold-dark);
+    border-radius: 3px;
+    padding: 0 4px;
+  }
+  .doctor-meta {
+    font-size: 12px;
+    color: var(--text-sub);
+    margin-bottom: 6px;
+  }
+  .doctor-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .doctor-badge {
+    font-size: 10px;
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  .doctor-badge.sanjia { background:rgba(201,168,76,0.15); color:var(--gold-mid); border:1px solid var(--gold-dark); }
+  .doctor-badge.fudan { background:rgba(74,144,226,0.15); color:#7ab8f5; border:1px solid rgba(74,144,226,0.4); }
+  .doctor-badge.verified { background:rgba(46,160,67,0.15); color:#58c97d; border:1px solid rgba(46,160,67,0.4); }
+
+  .empty {
+    text-align: center;
+    padding: 40px 0;
+    color: var(--text-sub);
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <span class="navbar-back" onclick="history.back()">‹</span>
+  <span class="navbar-title gold-text">推荐医生</span>
+  <span class="navbar-right"></span>
+</nav>
+
+<div class="page-header">
+  <div class="page-header-title gold-text">本内容由以下医生推荐</div>
+  <div class="page-header-sub">三甲医院在职医生 · 平台已资质核验</div>
+  <div class="page-header-count" id="totalCount">共 0 位</div>
+</div>
+
+<div class="doctor-list" id="doctorList"></div>
+
+<script>
+  // 医生数据
+  const allDoctors = [
+    { name:'王德明', title:'主任医师', dept:'心内科', hospital:'北京协和医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+    { name:'陈慧芳', title:'副主任医师', dept:'内分泌科', hospital:'北京协和医院', emoji:'👩‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+    { name:'刘文涛', title:'主任医师', dept:'消化内科', hospital:'复旦附属医院', emoji:'👨‍⚕️', rank:'全国综合排行A+++' },
+    { name:'赵立新', title:'主任医师', dept:'呼吸内科', hospital:'北大人民医院', emoji:'👨‍⚕️', rank:'复旦榜A++' },
+    { name:'张伟', title:'主任医师', dept:'普外科', hospital:'北京协和医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+    { name:'王立', title:'副主任医师', dept:'肝胆外科', hospital:'复旦附属医院', emoji:'👨‍⚕️', rank:'全国综合排行A+++' },
+    { name:'李伟', title:'主任医师', dept:'胃肠外科', hospital:'中山大学附属', emoji:'👨‍⚕️', rank:'复旦榜A++' },
+    { name:'周海', title:'副主任医师', dept:'胸外科', hospital:'华西医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+    { name:'王明', title:'主任医师', dept:'儿科', hospital:'北京儿童医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+    { name:'赵华', title:'副主任医师', dept:'儿科', hospital:'复旦大学附属', emoji:'👩‍⚕️', rank:'全国综合排行A+++' },
+    { name:'刘强', title:'主任医师', dept:'儿童感染科', hospital:'中山大学附属', emoji:'👨‍⚕️', rank:'复旦榜A++' },
+    { name:'孙艳', title:'副主任医师', dept:'儿科营养', hospital:'华西医院', emoji:'👩‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+    { name:'陈华', title:'主任医师', dept:'脊柱外科', hospital:'北京积水潭医院', emoji:'👨‍⚕️', rank:'全国综合排行A++' },
+    { name:'刘强', title:'主任医师', dept:'关节科', hospital:'北京协和医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+    { name:'王伟', title:'副主任医师', dept:'骨科', hospital:'华西医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+    { name:'赵明', title:'主任医师', dept:'骨创伤科', hospital:'复旦附属医院', emoji:'👨‍⚕️', rank:'全国综合排行A+++' },
+    { name:'王立', title:'主任医师', dept:'神经内科', hospital:'北京天坛医院', emoji:'👨‍⚕️', rank:'全国综合排行A+++' },
+    { name:'赵强', title:'教授', dept:'神经内科', hospital:'北京协和医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+    { name:'刘明', title:'副主任医师', dept:'神经科', hospital:'华西医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+    { name:'孙波', title:'主任医师', dept:'脑血管科', hospital:'协和医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+    { name:'陈华', title:'主任医师', dept:'皮肤科', hospital:'北京协和医院', emoji:'👩‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+    { name:'王明', title:'副主任医师', dept:'皮肤科', hospital:'复旦附属医院', emoji:'👨‍⚕️', rank:'全国综合排行A+++' },
+    { name:'刘强', title:'主任医师', dept:'皮肤科', hospital:'华西医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+    { name:'孙立', title:'副主任医师', dept:'皮肤科', hospital:'协和医院', emoji:'👩‍⚕️', rank:'复旦榜A++' },
+    { name:'王德明', title:'主任医师', dept:'肿瘤内科', hospital:'天津肿瘤医院', emoji:'👨‍⚕️', rank:'全国综合排行A+++' },
+    { name:'刘强', title:'教授', dept:'肿瘤科', hospital:'复旦肿瘤医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+  ];
+
+  // 渲染医生列表
+  function renderDoctors() {
+    document.getElementById('totalCount').textContent = `共 ${allDoctors.length} 位`;
+    document.getElementById('doctorList').innerHTML = allDoctors.map(d => `
+      <div class="doctor-item">
+        <div class="doctor-avatar">${d.emoji}</div>
+        <div class="doctor-info">
+          <div class="doctor-name-row">
+            <span class="doctor-name">${d.name}</span>
+            <span class="doctor-title-tag">${d.title}</span>
+          </div>
+          <div class="doctor-meta">${d.dept} · ${d.hospital}</div>
+          <div class="doctor-badges">
+            <span class="doctor-badge sanjia">三甲</span>
+            <span class="doctor-badge fudan">${d.rank}</span>
+            <span class="doctor-badge verified">✓ 平台已验证</span>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  renderDoctors();
+</script>
+</body>
+</html>

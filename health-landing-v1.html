@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>百度健康·医选</title>
+  <style>
+    /* ===== 全局重置 & 变量 ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-deep:      #060d1a;
+      --bg-card:      #0d1b2e;
+      --bg-card2:     #101f33;
+      --gold-dark:    #8b6914;
+      --gold-mid:     #c9a84c;
+      --gold-light:   #f5d87e;
+      --gold-shine:   #fff4cc;
+      --silver:       #c0c0c0;
+      --bronze:       #cd7f32;
+      --text-primary: #f0e8d0;
+      --text-sub:     #a89060;
+      --text-muted:   #5c6e85;
+      --divider:      rgba(201,168,76,0.25);
+      --radius-lg:    16px;
+      --radius-md:    10px;
+      --radius-sm:    6px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      max-width: 430px;
+      margin: 0 auto;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ===== 工具类 ===== */
+    .gold-text {
+      background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold-light) 50%, var(--gold-dark) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+    .section-title::before,
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-mid), transparent);
+    }
+    .divider {
+      height: 1px;
+      background: var(--divider);
+      margin: 12px 0;
+    }
+
+    /* ===== ① 大IP头部 ===== */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 28px 20px 8px;
+      text-align: center;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,168,76,0.18) 0%, transparent 70%),
+        linear-gradient(180deg, #0a1628 0%, #060d1a 100%);
+    }
+
+    /* 粒子光点（静态） */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(245,216,126,0.6) 1px, transparent 1px),
+        radial-gradient(circle, rgba(245,216,126,0.3) 1px, transparent 1px);
+      background-size: 60px 60px, 30px 30px;
+      background-position: 0 0, 15px 15px;
+      opacity: 0.2;
+    }
+
+    .hero-badge {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(201,168,76,0.12);
+      border: 1px solid rgba(201,168,76,0.4);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 11px;
+      color: var(--gold-mid);
+      letter-spacing: 1.5px;
+      margin-bottom: 20px;
+    }
+    .hero-badge::before {
+      content: '◆';
+      font-size: 8px;
+    }
+    .hero-badge::after {
+      content: '◆';
+      font-size: 8px;
+    }
+
+
+    .hero-title {
+      position: relative;
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: 6px;
+      line-height: 1.2;
+      margin-bottom: 8px;
+      font-family: "Songti SC", "SimSun", serif;
+      background: linear-gradient(180deg, var(--gold-shine) 0%, var(--gold-light) 40%, var(--gold-mid) 80%, var(--gold-dark) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: none;
+      filter: drop-shadow(0 2px 8px rgba(201,168,76,0.4));
+    }
+
+    .hero-subtitle {
+      font-size: 12px;
+      color: var(--text-sub);
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+    }
+
+    .hero-slogan {
+      position: relative;
+      display: inline-block;
+      font-size: 12px;
+      color: var(--gold-mid);
+      padding: 6px 20px;
+      border-top: 1px solid var(--divider);
+      border-bottom: 1px solid var(--divider);
+      letter-spacing: 1px;
+    }
+
+    /* ===== ② 权威数字概览 ===== */
+    .stats {
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      margin: 0 16px 12px;
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--divider);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3), inset 0 1px 0 rgba(201,168,76,0.08);
+    }
+    .stat-item {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 10px 4px;
+    }
+    .stat-item + .stat-item {
+      border-left: 1px solid var(--divider);
+    }
+    .stat-num {
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .stat-desc {
+      font-size: 11px;
+      color: var(--text-sub);
+      letter-spacing: 0.5px;
+    }
+
+    /* ===== 通用 Section 容器 ===== */
+    .section {
+      margin: 0 16px 20px;
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--divider);
+      padding: 18px 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(201,168,76,0.08);
+    }
+
+    /* ===== ③ 优质内容榜 ===== */
+
+    /* Tab 栏 */
+    .tab-bar {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 12px;
+      margin-bottom: 4px;
+    }
+    .tab-bar::-webkit-scrollbar { display: none; }
+
+    /* 推荐医生列表 */
+    .doctor-header { display:flex; align-items:center; margin-bottom:8px; }
+    .doctor-header-title { font-size:12px; color:var(--text-sub); flex:1; }
+    .doctor-more-btn { font-size:11px; color:var(--gold-mid); background:none; border:none; padding:0; cursor:pointer; }
+    .doctor-avatar-row { display:flex; gap:0; justify-content:space-between; }
+    .doctor-avatar-row::-webkit-scrollbar { display:none; }
+    .doctor-avatar-item { display:flex; flex-direction:column; align-items:center; gap:5px; flex:1; min-width:0; }
+    .doctor-avatar { width:52px; height:52px; border-radius:50%; background:linear-gradient(135deg,var(--gold-dark),var(--gold-mid)); display:flex; align-items:center; justify-content:center; font-size:26px; flex-shrink:0; }
+    .doctor-avatar-name { font-size:11px; color:var(--text-primary); text-align:center; white-space:nowrap; }
+
+      margin-bottom: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--divider);
+    }
+    .related-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gold-mid);
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .related-label::before {
+      content: '';
+      width: 3px;
+      height: 12px;
+      background: linear-gradient(180deg, var(--gold-mid), var(--gold-dark));
+      border-radius: 2px;
+    }
+    .related-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      cursor: pointer;
+    }
+    .related-item:active { background: rgba(201,168,76,0.05); }
+    .related-thumb {
+      width: 56px;
+      height: 42px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      background: linear-gradient(135deg, #0d1f35, #1a2d45);
+      border: 1px solid rgba(201,168,76,0.2);
+      flex-shrink: 0;
+    }
+    .related-info { flex: 1; min-width: 0; }
+    .related-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.4;
+    }
+    .related-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .tab-btn {
+      flex-shrink: 0;
+      padding: 5px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(201,168,76,0.3);
+      background: transparent;
+      color: var(--text-sub);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold-mid));
+      border-color: var(--gold-light);
+      color: #000;
+      font-weight: 700;
+      box-shadow: 0 2px 10px rgba(201,168,76,0.4);
+    }
+    .tab-btn:not(.active):hover {
+      border-color: var(--gold-mid);
+      color: var(--gold-mid);
+    }
+
+    /* 内容条目 */
+    .content-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      cursor: pointer;
+      transition: background 0.2s;
+      border-radius: var(--radius-sm);
+    }
+    .content-item:active { background: rgba(201,168,76,0.05); }
+
+    .rank-badge {
+      width: 22px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .rank-1 { color: var(--gold-light); text-shadow: 0 0 8px rgba(245,216,126,0.6); }
+    .rank-2 { color: var(--silver); }
+    .rank-3 { color: var(--bronze); }
+    .rank-n  { color: var(--text-muted); font-size: 13px; }
+
+    .content-thumb {
+      width: 72px;
+      height: 54px;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+      flex-shrink: 0;
+      background: var(--bg-card2);
+      position: relative;
+      overflow: hidden;
+    }
+    .content-thumb-mock {
+      width: 72px;
+      height: 54px;
+      border-radius: var(--radius-sm);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      background: linear-gradient(135deg, #0d1f35, #1a2d45);
+      border: 1px solid rgba(201,168,76,0.2);
+    }
+
+    .content-info       { flex: 1; min-width: 0; }
+    .content-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.4;
+      margin-bottom: 4px;
+    }
+    .content-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .content-meta .dot { color: var(--divider); }
+    .cert-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      background: rgba(201,168,76,0.15);
+      border: 1px solid rgba(201,168,76,0.4);
+      border-radius: 3px;
+      padding: 1px 5px;
+      font-size: 10px;
+      color: var(--gold-mid);
+      flex-shrink: 0;
+    }
+
+    .play-count {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* 查看更多按钮 */
+    .more-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      margin-top: 12px;
+      padding: 9px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(201,168,76,0.3);
+      background: rgba(201,168,76,0.06);
+      color: var(--gold-mid);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .more-btn:hover, .more-btn:active {
+      background: rgba(201,168,76,0.12);
+      border-color: var(--gold-mid);
+    }
+    .more-btn .arrow {
+      transition: transform 0.3s;
+      font-size: 12px;
+    }
+    .more-btn.expanded .arrow { transform: rotate(180deg); }
+
+    /* 隐藏的更多内容 */
+    .extra-content {
+      display: none;
+    }
+    .extra-content.show {
+      display: block;
+    }
+
+    /* ===== ④⑤ 左右榜单 ===== */
+    .ranking-row {
+      display: flex;
+      gap: 0;
+      margin: 0 16px 20px;
+    }
+    .ranking-panel {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--divider);
+      padding: 16px 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+      min-width: 0;
+    }
+    .ranking-panel:first-child {
+      border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+      border-right: none;
+      background:
+        linear-gradient(135deg, #0d1b2e 0%, #0a1628 100%);
+    }
+    .ranking-panel:last-child {
+      border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+      background:
+        linear-gradient(135deg, #110d25 0%, #0a0d1a 100%);
+      border-left: 1px solid var(--divider);
+    }
+
+    /* 中间金色分割线 */
+    .ranking-divider {
+      width: 1px;
+      background: linear-gradient(180deg, transparent, var(--gold-mid), transparent);
+      flex-shrink: 0;
+    }
+
+    .panel-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gold-light);
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .panel-title .icon { font-size: 14px; }
+
+    .author-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: background 0.2s;
+    }
+    .author-item:active { background: rgba(201,168,76,0.06); }
+
+    .author-rank {
+      width: 16px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    /* 圆形头像 (作者) */
+    .avatar-circle {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      border: 2px solid var(--gold-mid);
+      background: linear-gradient(135deg, #1a2d45, #0d1b2e);
+      box-shadow: 0 0 8px rgba(201,168,76,0.25);
+    }
+    /* 六边形头像 (专家) */
+    .avatar-hex {
+      width: 38px;
+      height: 38px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+      background: linear-gradient(135deg, var(--gold-mid), var(--gold-dark));
+      box-shadow: 0 0 10px rgba(201,168,76,0.3);
+    }
+
+    .author-info { flex: 1; min-width: 0; }
+    .author-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .author-dept {
+      font-size: 10px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 1px;
+    }
+    .author-count {
+      font-size: 10px;
+      color: var(--gold-mid);
+      margin-top: 2px;
+      white-space: nowrap;
+    }
+
+    .small-badge {
+      display: inline-block;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 9px;
+      line-height: 1.5;
+      flex-shrink: 0;
+    }
+    .badge-gold-v {
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold-mid));
+      color: #000;
+      font-weight: 700;
+    }
+    .badge-expert {
+      background: linear-gradient(135deg, #5a2d9e, #8b44d4);
+      color: #e8d4ff;
+      font-weight: 700;
+    }
+
+    .panel-more {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      width: 100%;
+      margin-top: 10px;
+      padding: 7px;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(201,168,76,0.25);
+      background: rgba(201,168,76,0.05);
+      color: var(--text-sub);
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .panel-more:active {
+      background: rgba(201,168,76,0.1);
+    }
+
+    /* ===== ⑥ 底部说明 ===== */
+    .footer {
+      margin: 0 16px 40px;
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--divider);
+      padding: 16px;
+    }
+    .footer-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      font-size: 13px;
+      color: var(--text-sub);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+    }
+    .footer-item:active { background: rgba(201,168,76,0.05); }
+    .footer-item .left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .footer-item .fi-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: rgba(201,168,76,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    .footer-item .arrow-right {
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    /* ===== 顶部NavBar ===== */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      background: rgba(6, 13, 26, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--divider);
+    }
+    .navbar-back {
+      font-size: 18px;
+      color: var(--gold-mid);
+      cursor: pointer;
+      padding: 4px 8px 4px 0;
+    }
+    .navbar-title {
+      flex: 1;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+    .navbar-share {
+      font-size: 16px;
+      color: var(--gold-mid);
+      cursor: pointer;
+      padding: 4px 0 4px 8px;
+    }
+
+    /* ===== 榜单 Tab 切换 ===== */
+    .ranking-section {
+      margin: 0 16px 20px;
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--divider);
+      padding: 16px 16px 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(201,168,76,0.08);
+    }
+    .ranking-tabs {
+      display: flex;
+      margin-bottom: 14px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--divider);
+    }
+    .ranking-tab-btn {
+      flex: 1;
+      padding: 8px 0;
+      background: transparent;
+      border: none;
+      color: var(--text-sub);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .ranking-tab-btn.active {
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold-mid));
+      color: #000;
+      box-shadow: 0 2px 8px rgba(201,168,76,0.3);
+    }
+    .ranking-tab-btn:not(.active):hover {
+      color: var(--gold-mid);
+      background: rgba(201,168,76,0.06);
+    }
+    .ranking-tab-pane { display: none; }
+    .ranking-tab-pane.active { display: block; }
+
+    /* 作者列表（榜单Tab内）宽度适应全宽 */
+    .ranking-section .author-item {
+      gap: 10px;
+    }
+    .ranking-section .avatar-circle,
+    .ranking-section .avatar-hex {
+      width: 42px;
+      height: 42px;
+      font-size: 20px;
+    }
+    .ranking-section .author-name { font-size: 13px; }
+    .ranking-section .author-dept { font-size: 11px; }
+    .ranking-section .author-count { font-size: 11px; }
+
+    /* ===== 体验入口区域 ===== */
+    .feedback-section {
+      margin: 0 16px 40px;
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--divider);
+      padding: 18px 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+    }
+    .feedback-entry-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .feedback-entry {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(201,168,76,0.06);
+      border: 1px solid var(--divider);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .feedback-entry:active,
+    .feedback-entry:hover { background: rgba(201,168,76,0.12); border-color: rgba(201,168,76,0.5); }
+    .feedback-entry .fe-icon { font-size: 22px; flex-shrink: 0; }
+    .feedback-entry .fe-text { font-size: 11px; color: var(--text-sub); line-height: 1.3; margin-top: 2px; }
+    .feedback-entry .fe-title { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+    .feedback-entry .fe-arrow { margin-left: auto; color: var(--text-muted); font-size: 14px; flex-shrink: 0; }
+  </style>
+
+  <style>
+    .feedback-fab {
+      position: fixed;
+      top: 72px;
+      right: 12px;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold-mid));
+      border-radius: 20px;
+      padding: 8px 6px;
+      cursor: pointer;
+      box-shadow: 0 2px 12px rgba(201,168,76,0.35);
+      writing-mode: vertical-rl;
+      font-size: 11px;
+      color: #060d1a;
+      font-weight: 600;
+      letter-spacing: 1px;
+      gap: 4px;
+      user-select: none;
+    }
+    .feedback-fab:active { opacity: 0.85; }
+    .feedback-fab-icon { font-size: 16px; writing-mode: horizontal-tb; }
+  </style>
+</head>
+<body>
+
+<!-- 调研反馈悬浮入口 -->
+<div class="feedback-fab" onclick="alert('调研反馈')">
+  <span class="feedback-fab-icon">📋</span>
+  <span>调研反馈</span>
+</div>
+
+<!-- 顶部导航栏 -->
+<nav class="navbar">
+  <span class="navbar-back">‹</span>
+  <span class="navbar-title gold-text">百度健康·医选</span>
+  <span class="navbar-share">⊙</span>
+</nav>
+
+<!-- ① 大IP头部横幅 -->
+<section class="hero">
+  <h1 class="hero-title">百度健康·医选</h1>
+  <p class="hero-subtitle">甄选权威 · 鉴定真知 · 护航健康</p>
+
+</section>
+
+
+<!-- 推荐医生区块 -->
+<div class="section" style="padding-top:14px;padding-bottom:14px;">
+  <div id="doctorList"></div>
+</div>
+
+<!-- ③ 优质内容榜 -->
+<div class="section">
+  <div class="section-title">
+    <span class="gold-text">百度健康·医选内容</span>
+  </div>
+
+  <!-- Tab 栏 -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab(this,'推荐')">推荐</button>
+    <button class="tab-btn" onclick="switchTab(this,'内科')">内科</button>
+    <button class="tab-btn" onclick="switchTab(this,'外科')">外科</button>
+    <button class="tab-btn" onclick="switchTab(this,'儿科')">儿科</button>
+    <button class="tab-btn" onclick="switchTab(this,'骨科')">骨科</button>
+    <button class="tab-btn" onclick="switchTab(this,'神经科')">神经科</button>
+    <button class="tab-btn" onclick="switchTab(this,'皮肤科')">皮肤科</button>
+    <button class="tab-btn" onclick="switchTab(this,'肿瘤科')">肿瘤科</button>
+  </div>
+
+  <!-- TOP 5 默认展示 -->
+  <div id="contentList">
+    <div id="mainContent"></div>
+
+    <!-- 展开更多 -->
+    <div class="extra-content" id="extraContent"></div>
+  </div>
+
+  <button class="more-btn" id="moreBtn" onclick="toggleMore()">
+    <span>查看更多内容</span>
+    <span class="arrow">▼</span>
+  </button>
+</div>
+
+<!-- ④⑤ 榜单 Tab 切换 -->
+<div class="ranking-section">
+  <div class="section-title" style="margin-bottom:12px;">
+    <span class="gold-text">荣誉榜单</span>
+  </div>
+
+  <div class="ranking-tabs">
+    <button class="ranking-tab-btn active" onclick="switchRankTab(this,'authorPane')">
+      ✍️ 优质作者榜
+    </button>
+    <button class="ranking-tab-btn" onclick="switchRankTab(this,'expertPane')">
+      🏅 背书专家榜
+    </button>
+  </div>
+
+  <!-- 优质作者榜 -->
+  <div class="ranking-tab-pane active" id="authorPane">
+
+    <div class="author-item">
+      <div class="author-rank rank-1">1</div>
+      <div class="avatar-circle">👨‍⚕️</div>
+      <div class="author-info">
+        <div class="author-name">张建国</div>
+        <div class="author-dept">心内科·主任医师 · 北京协和医院</div>
+        <div class="author-count">优质内容 56条</div>
+      </div>
+      <span class="small-badge badge-gold-v">金V</span>
+    </div>
+    <div class="divider"></div>
+
+    <div class="author-item">
+      <div class="author-rank rank-2">2</div>
+      <div class="avatar-circle">👩‍⚕️</div>
+      <div class="author-info">
+        <div class="author-name">王晓燕</div>
+        <div class="author-dept">内分泌科·副主任医师 · 复旦附属医院</div>
+        <div class="author-count">优质内容 43条</div>
+      </div>
+      <span class="small-badge badge-gold-v">金V</span>
+    </div>
+    <div class="divider"></div>
+
+    <div class="author-item">
+      <div class="author-rank rank-3">3</div>
+      <div class="avatar-circle">👨‍⚕️</div>
+      <div class="author-info">
+        <div class="author-name">陈志远</div>
+        <div class="author-dept">呼吸内科·主治医师 · 中山大学附属</div>
+        <div class="author-count">优质内容 38条</div>
+      </div>
+      <span class="small-badge badge-gold-v">金V</span>
+    </div>
+    <div class="divider"></div>
+
+    <div class="author-item">
+      <div class="author-rank rank-n">4</div>
+      <div class="avatar-circle">👩‍⚕️</div>
+      <div class="author-info">
+        <div class="author-name">刘海涛</div>
+        <div class="author-dept">全科医学·主任 · 北大人民医院</div>
+        <div class="author-count">优质内容 31条</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="author-item">
+      <div class="author-rank rank-n">5</div>
+      <div class="avatar-circle">👨‍⚕️</div>
+      <div class="author-info">
+        <div class="author-name">李明辉</div>
+        <div class="author-dept">心内科·副主任医师 · 北京协和医院</div>
+        <div class="author-count">优质内容 27条</div>
+      </div>
+    </div>
+
+    <div id="moreAuthorList" style="display:none;">
+      <div class="divider"></div>
+      <div class="author-item">
+        <div class="author-rank rank-n">6</div>
+        <div class="avatar-circle">👨‍⚕️</div>
+        <div class="author-info">
+          <div class="author-name">周国平</div>
+          <div class="author-dept">内分泌科·主任医师 · 瑞金医院</div>
+          <div class="author-count">优质内容 24条</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="author-item">
+        <div class="author-rank rank-n">7</div>
+        <div class="avatar-circle">👩‍⚕️</div>
+        <div class="author-info">
+          <div class="author-name">孙慧敏</div>
+          <div class="author-dept">神经内科·副主任医师 · 华西医院</div>
+          <div class="author-count">优质内容 21条</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="author-item">
+        <div class="author-rank rank-n">8</div>
+        <div class="avatar-circle">👨‍⚕️</div>
+        <div class="author-info">
+          <div class="author-name">赵文博</div>
+          <div class="author-dept">肿瘤内科·主治医师 · 天津肿瘤医院</div>
+          <div class="author-count">优质内容 18条</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="author-item">
+        <div class="author-rank rank-n">9</div>
+        <div class="avatar-circle">👩‍⚕️</div>
+        <div class="author-info">
+          <div class="author-name">林晓燕</div>
+          <div class="author-dept">皮肤科·主任医师 · 北京协和医院</div>
+          <div class="author-count">优质内容 15条</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="author-item">
+        <div class="author-rank rank-n">10</div>
+        <div class="avatar-circle">👨‍⚕️</div>
+        <div class="author-info">
+          <div class="author-name">吴建国</div>
+          <div class="author-dept">外科·主任医师 · 安贞医院</div>
+          <div class="author-count">优质内容 13条</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="panel-more" id="authorMoreBtn" onclick="toggleMoreAuthors()">查看更多作者 ›</button>
+  </div>
+
+  <!-- 背书专家榜 -->
+  <div class="ranking-tab-pane" id="expertPane">
+
+    <div class="author-item">
+      <div class="author-rank rank-1">1</div>
+      <div class="avatar-hex">👨‍🔬</div>
+      <div class="author-info">
+        <div class="author-name">王德明</div>
+        <div class="author-dept">院士·心血管内科 · 北京协和医院</div>
+        <div class="author-count">已鉴真 312条</div>
+      </div>
+      <span class="small-badge badge-expert">专家</span>
+    </div>
+    <div class="divider"></div>
+
+    <div class="author-item">
+      <div class="author-rank rank-2">2</div>
+      <div class="avatar-hex">👩‍🔬</div>
+      <div class="author-info">
+        <div class="author-name">陈慧芳</div>
+        <div class="author-dept">教授·神经内科 · 四川大学华西医院</div>
+        <div class="author-count">已鉴真 287条</div>
+      </div>
+      <span class="small-badge badge-expert">专家</span>
+    </div>
+    <div class="divider"></div>
+
+    <div class="author-item">
+      <div class="author-rank rank-3">3</div>
+      <div class="avatar-hex">👨‍🔬</div>
+      <div class="author-info">
+        <div class="author-name">刘文涛</div>
+        <div class="author-dept">主任委员·肿瘤内科 · 复旦大学附属</div>
+        <div class="author-count">已鉴真 241条</div>
+      </div>
+      <span class="small-badge badge-expert">专家</span>
+    </div>
+    <div class="divider"></div>
+
+    <div class="author-item">
+      <div class="author-rank rank-n">4</div>
+      <div class="avatar-hex">👩‍🔬</div>
+      <div class="author-info">
+        <div class="author-name">孙晓华</div>
+        <div class="author-dept">教授·内分泌科 · 中山大学附属医院</div>
+        <div class="author-count">已鉴真 198条</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="author-item">
+      <div class="author-rank rank-n">5</div>
+      <div class="avatar-hex">👨‍🔬</div>
+      <div class="author-info">
+        <div class="author-name">赵立新</div>
+        <div class="author-dept">主任医师·消化内科 · 上海瑞金医院</div>
+        <div class="author-count">已鉴真 176条</div>
+      </div>
+    </div>
+
+    <button class="panel-more">查看更多专家 ›</button>
+  </div>
+</div>
+
+
+<script>
+  // 科室内容数据
+  const deptData = {
+    '推荐': {
+      doctors: [
+        { name:'王德明', title:'主任医师', dept:'心内科', hospital:'北京协和医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+      ],
+      items: [
+        { emoji:'🩺', title:'高血压患者如何科学降压？医生告诉你真相', author:'李明辉', play:'128.4万次播放', cert:'北京协和王德明医生鉴真' },
+        { emoji:'💊', title:'高血压用药误区大全，这些坑你踩过吗', author:'张建国', play:'98.2万次播放', cert:'北京协和陈慧芳医生鉴真' },
+        { emoji:'🧬', title:'高血压患者的饮食禁忌，控盐只是第一步', author:'王晓燕', play:'87.6万次播放', cert:'复旦附属刘文涛医生鉴真' },
+        { emoji:'❤️', title:'高血压会引发哪些并发症？提前预防是关键', author:'陈志远', play:'65.3万次播放', cert:'中山大学孙晓华医生鉴真' },
+        { emoji:'🏃', title:'高血压患者能运动吗？什么强度才安全', author:'刘海涛', play:'54.1万次播放', cert:'北大人民赵立新医生鉴真' },
+        { emoji:'😴', title:'高血压与睡眠的关系，晚上血压高怎么办', author:'周国平', play:'33.8万次播放', cert:'瑞金医院刘文涛医生鉴真' },
+        { emoji:'🔬', title:'血压计怎么正确使用？家庭测压注意事项', author:'赵文博', play:'48.7万次播放', cert:'天津医院王德明医生鉴真' },
+        { emoji:'🧠', title:'年轻人也会得高血压？这些危险因素要注意', author:'孙慧敏', play:'39.2万次播放', cert:'华西医院陈慧芳医生鉴真' },
+      ],
+    },
+    '内科': {
+      doctors: [
+        { name:'王德明', title:'主任医师', dept:'心内科', hospital:'北京协和医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+        { name:'陈慧芳', title:'副主任医师', dept:'内分泌科', hospital:'北京协和医院', emoji:'👩‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+        { name:'刘文涛', title:'主任医师', dept:'消化内科', hospital:'复旦附属医院', emoji:'👨‍⚕️', rank:'全国综合排行A+++' },
+        { name:'赵立新', title:'主任医师', dept:'呼吸内科', hospital:'北大人民医院', emoji:'👨‍⚕️', rank:'复旦榜A++' },
+      ],
+      items: [
+        { emoji:'🫀', title:'心脏病患者日常饮食该注意哪些？这几点一定要记住', author:'张建国', play:'128.4万次播放', cert:'北京协和王德明医生鉴真' },
+        { emoji:'💊', title:'糖尿病患者每日血糖控制目标，这张表收好', author:'王晓燕', play:'87.6万次播放', cert:'复旦附属刘文涛医生鉴真' },
+        { emoji:'🫁', title:'慢性阻塞性肺疾病日常管理，肺科专家详解', author:'陈志远', play:'65.3万次播放', cert:'中山大学孙晓华医生鉴真' },
+        { emoji:'🩺', title:'体检报告出现这几个指标异常，别慌，医生来解读', author:'刘海涛', play:'54.1万次播放', cert:'北大人民赵立新医生鉴真' },
+        { emoji:'💉', title:'甲状腺结节该不该手术？医生手把手教你看报告', author:'周国平', play:'33.8万次播放', cert:'瑞金医院刘文涛医生鉴真' },
+        { emoji:'🔬', title:'肿瘤标志物升高就是癌症？别被吓到，听专家分析', author:'赵文博', play:'48.7万次播放', cert:'天津肿瘤王德明医生鉴真' },
+        { emoji:'🧠', title:'头痛的这几种类型，一定要学会区分', author:'孙慧敏', play:'39.2万次播放', cert:'华西医院陈慧芳医生鉴真' },
+        { emoji:'🧬', title:'痛风急性发作如何处理？内科医生详解', author:'李明辉', play:'55.7万次播放', cert:'北京协和陈慧芳医生鉴真' },
+      ],
+    },
+    '外科': {
+      doctors: [
+        { name:'张伟', title:'主任医师', dept:'普外科', hospital:'北京协和医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+        { name:'王立', title:'副主任医师', dept:'肝胆外科', hospital:'复旦附属医院', emoji:'👨‍⚕️', rank:'全国综合排行A+++' },
+        { name:'李伟', title:'主任医师', dept:'胃肠外科', hospital:'中山大学附属', emoji:'👨‍⚕️', rank:'复旦榜A++' },
+        { name:'周海', title:'副主任医师', dept:'胸外科', hospital:'华西医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+      ],
+      items: [
+        { emoji:'🔪', title:'胆结石该不该做手术？外科医生详解手术指征', author:'林建华', play:'76.5万次播放', cert:'北京协和张伟医生鉴真' },
+        { emoji:'🏥', title:'胆囊切除后饮食如何调整？这几点很关键', author:'陈大勇', play:'62.3万次播放', cert:'复旦附属王立医生鉴真' },
+        { emoji:'🩻', title:'胆结石会自己消失吗？体外碎石有效果吗', author:'刘志强', play:'55.8万次播放', cert:'中山大学李伟医生鉴真' },
+        { emoji:'💊', title:'胆结石疼痛发作怎么缓解？急性胆绞痛处理', author:'赵国明', play:'48.2万次播放', cert:'华西医院周海医生鉴真' },
+        { emoji:'🥗', title:'预防胆结石，这几种食物要少吃', author:'孙志远', play:'39.7万次播放', cert:'安贞医院钱文医生鉴真' },
+        { emoji:'🩺', title:'胆结石与胆囊息肉怎么区分？超声报告解读', author:'吴晓明', play:'31.5万次播放', cert:'北大人民王健医生鉴真' },
+        { emoji:'🔬', title:'无症状胆结石需要治疗吗？医生给出建议', author:'郑海涛', play:'27.4万次播放', cert:'瑞金医院陈立医生鉴真' },
+        { emoji:'🏋', title:'胆结石术后多久可以恢复正常生活？', author:'钱晓峰', play:'22.1万次播放', cert:'协和医院李强医生鉴真' },
+      ],
+    },
+    '儿科': {
+      doctors: [
+        { name:'王明', title:'主任医师', dept:'儿科', hospital:'北京儿童医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+        { name:'赵华', title:'副主任医师', dept:'儿科', hospital:'复旦大学附属', emoji:'👩‍⚕️', rank:'全国综合排行A+++' },
+        { name:'刘强', title:'主任医师', dept:'儿童感染科', hospital:'中山大学附属', emoji:'👨‍⚕️', rank:'复旦榜A++' },
+        { name:'孙艳', title:'副主任医师', dept:'儿科营养', hospital:'华西医院', emoji:'👩‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+      ],
+      items: [
+        { emoji:'🌡️', title:'宝宝反复发烧怎么办？儿科医生详细解答', author:'张慧敏', play:'112.6万次播放', cert:'北京儿童王明医生鉴真' },
+        { emoji:'💊', title:'小儿发烧什么时候用退烧药？剂量怎么算', author:'李晓燕', play:'98.3万次播放', cert:'复旦儿科赵华医生鉴真' },
+        { emoji:'🧊', title:'发烧物理降温有效吗？冷敷还是温水擦拭', author:'陈文博', play:'85.7万次播放', cert:'中山附属刘强医生鉴真' },
+        { emoji:'👶', title:'发烧伴随惊厥怎么处理？家长必学急救', author:'周晓华', play:'72.4万次播放', cert:'华西儿科孙艳医生鉴真' },
+        { emoji:'🩺', title:'发烧多少度需要去医院？这个标准要记住', author:'吴志远', play:'58.9万次播放', cert:'北大人民王雪医生鉴真' },
+        { emoji:'🍼', title:'婴儿发烧和长牙发烧怎么区分？', author:'郑建国', play:'46.3万次播放', cert:'同仁医院陈波医生鉴真' },
+        { emoji:'🌿', title:'发烧期间饮食注意什么？这些食物要避开', author:'赵晓峰', play:'38.5万次播放', cert:'儿童医院张强医生鉴真' },
+        { emoji:'🫁', title:'退烧后为什么又反弹？三峰热现象解析', author:'孙海涛', play:'29.7万次播放', cert:'呼研所李明医生鉴真' },
+      ],
+    },
+    '骨科': {
+      doctors: [
+        { name:'陈华', title:'主任医师', dept:'脊柱外科', hospital:'北京积水潭医院', emoji:'👨‍⚕️', rank:'全国综合排行A++' },
+        { name:'刘强', title:'主任医师', dept:'关节科', hospital:'北京协和医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+        { name:'王伟', title:'副主任医师', dept:'骨科', hospital:'华西医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+        { name:'赵明', title:'主任医师', dept:'骨创伤科', hospital:'复旦附属医院', emoji:'👨‍⚕️', rank:'全国综合排行A+++' },
+      ],
+      items: [
+        { emoji:'🦴', title:'腰椎间盘突出症必须手术吗？骨科医生告诉你', author:'王建明', play:'103.8万次播放', cert:'北京积水潭陈华医生鉴真' },
+        { emoji:'🩻', title:'腰椎间盘突出和腰肌劳损怎么区分？', author:'李志强', play:'87.2万次播放', cert:'北京协和刘强医生鉴真' },
+        { emoji:'💪', title:'腰椎间盘突出保守治疗有哪些方法？', author:'陈文涛', play:'74.6万次播放', cert:'华西医院王伟医生鉴真' },
+        { emoji:'🏃', title:'腰椎突出患者能做哪些运动？禁忌动作有哪些', author:'周建华', play:'61.3万次播放', cert:'复旦附属赵明医生鉴真' },
+        { emoji:'🛏️', title:'腰椎间盘突出患者睡什么床好？硬板还是软床', author:'吴晓峰', play:'52.7万次播放', cert:'中山大学孙立医生鉴真' },
+        { emoji:'💊', title:'治疗腰椎突出的药物有哪些？用药注意事项', author:'郑志远', play:'43.9万次播放', cert:'北大人民钱华医生鉴真' },
+        { emoji:'🔬', title:'腰椎间盘突出手术后多久能恢复？', author:'赵国平', play:'35.4万次播放', cert:'瑞金医院陈强医生鉴真' },
+        { emoji:'⚕️', title:'腰椎间盘突出反复发作怎么办？预防措施详解', author:'孙志明', play:'27.8万次播放', cert:'积水潭医院王健医生鉴真' },
+      ],
+    },
+    '神经科': {
+      doctors: [
+        { name:'王立', title:'主任医师', dept:'神经内科', hospital:'北京天坛医院', emoji:'👨‍⚕️', rank:'全国综合排行A+++' },
+        { name:'赵强', title:'教授', dept:'神经内科', hospital:'北京协和医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+        { name:'刘明', title:'副主任医师', dept:'神经科', hospital:'华西医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+        { name:'孙波', title:'主任医师', dept:'脑血管科', hospital:'协和医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+      ],
+      items: [
+        { emoji:'🧠', title:'脑梗死来了如何快速识别？记住这个口诀', author:'陈志远', play:'135.2万次播放', cert:'北京天坛王立医生鉴真' },
+        { emoji:'💊', title:'脑梗后遗症如何康复？神经科专家全程指导', author:'李海涛', play:'97.8万次播放', cert:'北京协和赵强医生鉴真' },
+        { emoji:'🏃', title:'脑梗患者能做哪些康复训练？居家方案推荐', author:'张建国', play:'84.3万次播放', cert:'华西医院刘明医生鉴真' },
+        { emoji:'🩺', title:'脑梗死二级预防怎么做？抗板药能停吗', author:'王晓峰', play:'71.5万次播放', cert:'协和医院孙波医生鉴真' },
+        { emoji:'💡', title:'脑梗和脑出血如何区分？症状和处理不同', author:'刘志强', play:'58.9万次播放', cert:'天坛医院陈文医生鉴真' },
+        { emoji:'🥗', title:'脑梗患者的饮食管理，这几类食物要控制', author:'周建华', play:'47.6万次播放', cert:'复旦附属王华医生鉴真' },
+        { emoji:'🧬', title:'什么人容易脑梗？高危因素早知道早预防', author:'吴海明', play:'38.2万次播放', cert:'中山大学李立医生鉴真' },
+        { emoji:'❤️', title:'房颤会引发脑梗？心脏和大脑的关系详解', author:'郑志华', play:'29.4万次播放', cert:'北大人民钱强医生鉴真' },
+      ],
+    },
+    '皮肤科': {
+      doctors: [
+        { name:'陈华', title:'主任医师', dept:'皮肤科', hospital:'北京协和医院', emoji:'👩‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+        { name:'王明', title:'副主任医师', dept:'皮肤科', hospital:'复旦附属医院', emoji:'👨‍⚕️', rank:'全国综合排行A+++' },
+        { name:'刘强', title:'主任医师', dept:'皮肤科', hospital:'华西医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+        { name:'孙立', title:'副主任医师', dept:'皮肤科', hospital:'协和医院', emoji:'👩‍⚕️', rank:'复旦榜A++' },
+      ],
+      items: [
+        { emoji:'🌟', title:'痤疮的成因是什么？皮肤科医生从根源讲清楚', author:'林晓燕', play:'118.7万次播放', cert:'北京协和陈华医生鉴真' },
+        { emoji:'💊', title:'痤疮用药指南：外用药和口服药怎么选', author:'张慧敏', play:'96.4万次播放', cert:'复旦附属王明医生鉴真' },
+        { emoji:'🌿', title:'痤疮饮食禁忌：牛奶、甜食真的会加重吗', author:'陈志远', play:'82.5万次播放', cert:'华西医院刘强医生鉴真' },
+        { emoji:'🔬', title:'痘印怎么消？激光还是涂抹祛疤膏效果好', author:'王建明', play:'67.3万次播放', cert:'协和医院孙立医生鉴真' },
+        { emoji:'☀️', title:'长痘还能用防晒霜吗？痤疮肌护肤全攻略', author:'李晓峰', play:'54.8万次播放', cert:'瑞金医院赵华医生鉴真' },
+        { emoji:'🩺', title:'成人痤疮和青少年痘痘有什么不同？', author:'刘志华', play:'43.6万次播放', cert:'北大人民钱明医生鉴真' },
+        { emoji:'⚕️', title:'囊肿型痤疮怎么治？光动力和激光方案解析', author:'周国平', play:'35.1万次播放', cert:'中山大学陈强医生鉴真' },
+        { emoji:'🌺', title:'痘痘反复发作怎么办？内分泌调节是关键吗', author:'吴晓明', play:'28.7万次播放', cert:'天坛医院王波医生鉴真' },
+      ],
+    },
+    '肿瘤科': {
+      doctors: [
+        { name:'王德明', title:'主任医师', dept:'肿瘤内科', hospital:'天津肿瘤医院', emoji:'👨‍⚕️', rank:'全国综合排行A+++' },
+        { name:'刘强', title:'教授', dept:'肿瘤科', hospital:'复旦肿瘤医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+        { name:'王华', title:'主任医师', dept:'胸部肿瘤', hospital:'北京协和医院', emoji:'👩‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+        { name:'孙立', title:'副主任医师', dept:'肿瘤内科', hospital:'华西医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+      ],
+      items: [
+        { emoji:'🔬', title:'肺癌早期筛查怎么做？低剂量CT适合哪些人', author:'赵文博', play:'124.3万次播放', cert:'天津肿瘤王德明医生鉴真' },
+        { emoji:'🩻', title:'肺结节是肺癌吗？不同大小的处理建议', author:'陈志远', play:'98.7万次播放', cert:'复旦肿瘤刘强医生鉴真' },
+        { emoji:'💊', title:'肺癌靶向治疗效果如何？哪些患者适合', author:'李建华', play:'85.2万次播放', cert:'北京协和王华医生鉴真' },
+        { emoji:'🧬', title:'肺癌的基因检测有什么用？检测前必读', author:'张晓峰', play:'72.6万次播放', cert:'华西医院孙立医生鉴真' },
+        { emoji:'🌿', title:'肺癌手术后饮食和康复全指南', author:'王志明', play:'59.4万次播放', cert:'中山大学陈文医生鉴真' },
+        { emoji:'💉', title:'肺癌免疫治疗和化疗怎么选？医生详解', author:'刘海涛', play:'47.8万次播放', cert:'瑞金医院李明医生鉴真' },
+        { emoji:'🩺', title:'肺癌有哪些早期症状？这6个信号要警惕', author:'孙慧敏', play:'38.5万次播放', cert:'北大人民赵强医生鉴真' },
+        { emoji:'⚕️', title:'肺癌放疗副作用怎么应对？医生给出对策', author:'吴建国', play:'29.3万次播放', cert:'安贞医院钱华医生鉴真' },
+      ],
+    },
+  };
+
+  // 内容榜 Tab 切换
+  function switchTab(el, dept) {
+    document.querySelectorAll('.tab-bar .tab-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    renderDeptList(dept);
+    // 收起展开状态
+    const extra = document.getElementById('extraContent');
+    const btn = document.getElementById('moreBtn');
+    extra.classList.remove('show');
+    btn.classList.remove('expanded');
+    btn.querySelector('span:first-child').textContent = '查看更多内容';
+  }
+
+  function renderDeptList(dept) {
+    const data = deptData[dept] || { doctors:[], items:[] };
+    const items = data.items;
+    const doctors = data.doctors;
+    const badges = ['rank-1','rank-2','rank-3','rank-n','rank-n','rank-n','rank-n','rank-n'];
+    const top5 = items.slice(0, 5);
+    const extra = items.slice(5);
+
+    // 渲染推荐医生（仅初始化时调用一次）
+
+    function itemHTML(item, idx) {
+      const badge = badges[idx] || 'rank-n';
+      return `<div class="content-item">
+        <div class="rank-badge ${badge}">${idx+1}</div>
+        <div class="content-thumb-mock">${item.emoji}</div>
+        <div class="content-info">
+          <div class="content-title">${item.title}</div>
+          <div class="content-meta"><span>${item.author}</span></div>
+          <div class="play-count" style="margin-top:3px;"><span class="cert-badge">✦ ${item.cert.replace(/等\d+位医生联合鉴真/, '')}医生鉴真</span></div>
+        </div>
+      </div>`;
+    }
+
+    const mainHTML = top5.map((item, i) =>
+      itemHTML(item, i) + (i < top5.length - 1 ? '<div class="divider"></div>' : '')
+    ).join('');
+
+    const extraHTML = extra.map((item, i) =>
+      '<div class="divider"></div>' + itemHTML(item, i + 5)
+    ).join('');
+
+    document.getElementById('mainContent').innerHTML = mainHTML;
+    document.getElementById('extraContent').innerHTML = extraHTML;
+  }
+
+  // 查看更多内容
+  function toggleMore() {
+    const extra = document.getElementById('extraContent');
+    const btn   = document.getElementById('moreBtn');
+    const isOpen = extra.classList.contains('show');
+    if (isOpen) {
+      extra.classList.remove('show');
+      btn.classList.remove('expanded');
+      btn.querySelector('span:first-child').textContent = '查看更多内容';
+    } else {
+      extra.classList.add('show');
+      btn.classList.add('expanded');
+      btn.querySelector('span:first-child').textContent = '收起内容';
+    }
+  }
+
+  // 榜单 Tab 切换
+  function toggleMoreAuthors() {
+    const list = document.getElementById('moreAuthorList');
+    const btn = document.getElementById('authorMoreBtn');
+    const expanded = list.style.display !== 'none';
+    list.style.display = expanded ? 'none' : 'block';
+    btn.textContent = expanded ? '查看更多作者 ›' : '收起 ›';
+  }
+
+  function switchRankTab(el, paneId) {
+    document.querySelectorAll('.ranking-tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.ranking-tab-pane').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById(paneId).classList.add('active');
+  }
+
+  // 页面加载时渲染默认科室（内科）并初始化医生卡片
+  renderDeptList('推荐');
+
+  // 医生区块：横向头像列表，所有科室医生合并展示，右上角查看更多
+  const allDoctors = Object.values(deptData).flatMap(d => d.doctors)
+    .filter((d, i, arr) => arr.findIndex(x => x.name === d.name) === i); // 去重
+
+  function renderDoctorRow(showAll) {
+    const visible = showAll ? allDoctors : allDoctors.slice(0, 6);
+    document.getElementById('doctorList').innerHTML = `
+      <div class="doctor-header">
+        <span class="doctor-header-title">本内容由以下医生推荐</span>
+        <button class="doctor-more-btn" onclick="location.href='doctors.html'">查看更多 ›</button>
+      </div>
+      <div class="doctor-avatar-row">
+        ${visible.map(d => `
+          <div class="doctor-avatar-item">
+            <div class="doctor-avatar">${d.emoji}</div>
+            <div class="doctor-avatar-name">${d.name}</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+  renderDoctorRow(false);
+</script>
+</body>
+</html>

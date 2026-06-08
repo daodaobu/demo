@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>高血压想恢复正常 · 视频详情</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #000;
+    color: #fff;
+    min-height: 100vh;
+    max-width: 430px;
+    margin: 0 auto;
+    overflow-x: hidden;
+  }
+  /* 顶部状态栏 */
+  .status-bar {
+    display:flex; justify-content:space-between; align-items:center;
+    padding: 12px 18px 6px; font-size: 14px; font-weight: 600;
+  }
+  .status-bar-right { display:flex; gap:6px; align-items:center; }
+  /* 顶部搜索栏 */
+  .topbar {
+    display:flex; align-items:center; gap:8px; padding: 8px 14px 12px;
+  }
+  .topbar-search {
+    flex:1; background:#1c1c1e; border-radius:18px; padding:8px 12px;
+    display:flex; align-items:center; gap:6px; color:#aaa; font-size:13px;
+  }
+  .topbar-icon { font-size:22px; color:#fff; }
+
+  /* 视频标题 */
+  .video-title {
+    padding: 6px 18px 12px;
+    font-size: 18px; font-weight: 700; line-height: 1.5; text-align:center;
+  }
+
+  /* 视频画面占位 */
+  .video-area {
+    margin: 0 14px;
+    background: linear-gradient(135deg, #5a4a3a, #8a6a4a);
+    aspect-ratio: 4 / 3;
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .video-area-text {
+    background: rgba(0,0,0,0.4);
+    padding: 6px 14px;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  }
+
+  /* 金榜题名角标 */
+  .gold-corner {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 64px;
+    height: 80px;
+    background: linear-gradient(180deg, #f5d87e 0%, #c9a84c 50%, #8b6914 100%);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #5a0a0a;
+    font-size: 12px;
+    font-weight: 800;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  }
+  .gold-corner::before {
+    content: '✕';
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+  }
+  .gold-corner-label1 { font-size: 9px; }
+  .gold-corner-label2 { font-size: 13px; margin-top: 2px; }
+  .gold-corner-label3 { font-size: 8px; margin-top: 4px; background: #5a0a0a; color: #f5d87e; padding: 1px 4px; border-radius: 2px; }
+
+  /* 全屏观看 */
+  .fullscreen-btn {
+    margin: 14px auto 0;
+    width: 140px; height: 36px;
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 18px;
+    display:flex; align-items:center; justify-content:center;
+    gap: 6px; font-size: 13px;
+  }
+
+  /* 右侧操作栏 */
+  .right-side {
+    position: absolute;
+    right: 14px;
+    top: 40%;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    align-items: center;
+  }
+  .right-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c9a84c, #8b6914);
+    border: 2px solid #fff;
+    display:flex; align-items:center; justify-content:center;
+    font-size: 20px;
+  }
+  .right-follow {
+    background: #1976d2;
+    color: #fff;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 8px;
+    margin-top: -10px;
+  }
+  .right-icon {
+    font-size: 26px;
+    text-align: center;
+    line-height: 1;
+  }
+  .right-num { font-size: 11px; text-align:center; margin-top:4px; }
+
+  /* 底部推荐信息条 */
+  .recommend-bar {
+    margin: 30px 14px 12px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 24px;
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .recommend-bar:active { background: rgba(255,255,255,0.15); }
+  .recommend-ai {
+    width: 22px; height: 22px;
+    background: #2ea043;
+    color: #fff;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    font-style: italic;
+  }
+  .recommend-text { flex: 1; font-size: 13px; color: #fff; }
+  .recommend-text b { color: #5a9cff; }
+  .recommend-arrow { color: #aaa; font-size: 16px; }
+
+  /* 发布者信息 */
+  .author-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 18px;
+    font-size: 14px;
+  }
+  .author-row .name { color: #5a9cff; }
+  .author-row .time { color: #888; font-size: 12px; }
+
+  /* AI 摘要 */
+  .ai-summary {
+    margin: 0 14px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #ddd;
+  }
+  .ai-summary-title {
+    color: #5a9cff;
+    font-weight: 600;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .ai-summary-expand { color: #888; margin-top: 4px; }
+
+  .disclaimer {
+    padding: 8px 18px;
+    color: #888;
+    font-size: 11px;
+    display: flex; align-items: center; gap: 4px;
+  }
+
+  /* 章节 */
+  .chapter-bar {
+    position: fixed; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.92);
+    padding: 8px 14px;
+    display: flex; align-items: center; gap: 12px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .chapter-back { font-size: 22px; color: #aaa; }
+  .chapter-list {
+    flex: 1; display: flex; gap: 6px; overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .chapter-list::-webkit-scrollbar { display: none; }
+  .chapter-item {
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.08);
+    padding: 6px 12px;
+    border-radius: 14px;
+    font-size: 12px;
+    color: #fff;
+    white-space: nowrap;
+  }
+  .chapter-item.active {
+    background: linear-gradient(135deg, #c9a84c, #8b6914);
+    color: #060d1a;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<div class="status-bar">
+  <span>21:31 🔇</span>
+  <span class="status-bar-right">
+    <span>📶</span><span>📡</span><span style="color:#fff;">🔋14</span>
+  </span>
+</div>
+
+<div class="topbar">
+  <div class="topbar-search">
+    <span>👥</span>
+    <span style="flex:1;">170血压一般几天能降</span>
+    <span>🔍</span>
+  </div>
+  <span class="topbar-icon">🤖</span>
+  <span class="topbar-icon">听</span>
+  <span class="topbar-icon">⋮</span>
+</div>
+
+<div class="video-title">高血压想恢复正常，教你一招，恢复得快又好！</div>
+
+<div class="video-area">
+  <span class="video-area-text">我科普的目的就达到了</span>
+  <div class="gold-corner">
+    <span class="gold-corner-label1">🏆</span>
+    <span class="gold-corner-label2">状元</span>
+    <span class="gold-corner-label3">金榜题名</span>
+  </div>
+</div>
+
+<div class="fullscreen-btn">⛶ 全屏观看</div>
+
+<div class="right-side">
+  <div>
+    <div class="right-avatar">👨‍⚕️</div>
+    <div class="right-follow">关注</div>
+  </div>
+  <div>
+    <div class="right-icon">♡</div>
+    <div class="right-num">103</div>
+  </div>
+  <div>
+    <div class="right-icon">💬</div>
+    <div class="right-num">1</div>
+  </div>
+  <div>
+    <div class="right-icon">★</div>
+    <div class="right-num">44</div>
+  </div>
+  <div>
+    <div class="right-icon">↗</div>
+    <div class="right-num">16</div>
+  </div>
+</div>
+
+<div class="recommend-bar" onclick="location.href='health-landing-v2.html'">
+  <div class="recommend-ai">Ai</div>
+  <div class="recommend-text"><b>推荐</b> | 北京协和陈涛医生等 20人推荐</div>
+  <span class="recommend-arrow">›</span>
+</div>
+
+<div class="author-row">
+  <span class="name">@中医孟毅教授</span>
+  <span style="color:#5a9cff;">✓</span>
+  <span class="time">11小时前</span>
+</div>
+
+<div class="ai-summary">
+  <div class="ai-summary-title">Ai 摘要</div>
+  由中医孟毅主讲，介绍了高血压的中医治疗方法。孟医生分享了两种...
+  <div class="ai-summary-expand">展开</div>
+</div>
+
+<div class="disclaimer">⓵ 个人观点，仅供参考</div>
+
+<div class="chapter-bar">
+  <span class="chapter-back">‹</span>
+  <div class="chapter-list">
+    <div class="chapter-item active">1. 高血压的中医病因分析</div>
+    <div class="chapter-item">2. 推荐</div>
+    <div class="chapter-item">3. 治疗</div>
+  </div>
+</div>
+
+</body>
+</html>
