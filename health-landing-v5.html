@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>百度健康·医选</title>
+  <style>
+    /* ===== 全局重置 & 变量 ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-deep:      #060d1a;
+      --bg-card:      #0d1b2e;
+      --bg-card2:     #101f33;
+      --gold-dark:    #8b6914;
+      --gold-mid:     #c9a84c;
+      --gold-light:   #f5d87e;
+      --gold-shine:   #fff4cc;
+      --silver:       #c0c0c0;
+      --bronze:       #cd7f32;
+      --text-primary: #f0e8d0;
+      --text-sub:     #a89060;
+      --text-muted:   #5c6e85;
+      --divider:      rgba(201,168,76,0.25);
+      --radius-lg:    16px;
+      --radius-md:    10px;
+      --radius-sm:    6px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      max-width: 430px;
+      margin: 0 auto;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ===== 工具类 ===== */
+    .gold-text {
+      background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold-light) 50%, var(--gold-dark) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+    .section-subtitle {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin: -8px 0 12px;
+      padding-left: 2px;
+    }
+    .section-title::before,
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-mid), transparent);
+    }
+    .divider {
+      height: 1px;
+      background: var(--divider);
+      margin: 12px 0;
+    }
+
+    /* ===== ① 大IP头部 ===== */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 28px 20px 8px;
+      text-align: center;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,168,76,0.18) 0%, transparent 70%),
+        linear-gradient(180deg, #0a1628 0%, #060d1a 100%);
+    }
+
+    /* 粒子光点（静态） */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(245,216,126,0.6) 1px, transparent 1px),
+        radial-gradient(circle, rgba(245,216,126,0.3) 1px, transparent 1px);
+      background-size: 60px 60px, 30px 30px;
+      background-position: 0 0, 15px 15px;
+      opacity: 0.2;
+    }
+
+    .hero-badge {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(201,168,76,0.12);
+      border: 1px solid rgba(201,168,76,0.4);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 11px;
+      color: var(--gold-mid);
+      letter-spacing: 1.5px;
+      margin-bottom: 20px;
+    }
+    .hero-badge::before {
+      content: '◆';
+      font-size: 8px;
+    }
+    .hero-badge::after {
+      content: '◆';
+      font-size: 8px;
+    }
+
+
+    .hero-title {
+      position: relative;
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: 6px;
+      line-height: 1.2;
+      margin-bottom: 8px;
+      font-family: "Songti SC", "SimSun", serif;
+      background: linear-gradient(180deg, var(--gold-shine) 0%, var(--gold-light) 40%, var(--gold-mid) 80%, var(--gold-dark) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: none;
+      filter: drop-shadow(0 2px 8px rgba(201,168,76,0.4));
+    }
+
+    .hero-subtitle {
+      font-size: 12px;
+      color: var(--text-sub);
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+    }
+
+    .hero-slogan {
+      position: relative;
+      display: inline-block;
+      font-size: 12px;
+      color: var(--gold-mid);
+      padding: 6px 20px;
+      border-top: 1px solid var(--divider);
+      border-bottom: 1px solid var(--divider);
+      letter-spacing: 1px;
+    }
+
+    /* ===== ② 权威数字概览 ===== */
+    .stats {
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      margin: 0 16px 12px;
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--divider);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3), inset 0 1px 0 rgba(201,168,76,0.08);
+    }
+    .stat-item {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 10px 4px;
+    }
+    .stat-item + .stat-item {
+      border-left: 1px solid var(--divider);
+    }
+    .stat-num {
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .stat-desc {
+      font-size: 11px;
+      color: var(--text-sub);
+      letter-spacing: 0.5px;
+    }
+
+    /* ===== 通用 Section 容器 ===== */
+    .section {
+      margin: 0 16px 20px;
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--divider);
+      padding: 18px 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(201,168,76,0.08);
+    }
+
+    /* ===== ③ 优质内容榜 ===== */
+
+    /* Tab 栏 */
+    .tab-bar {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 12px;
+      margin-bottom: 4px;
+    }
+    .tab-bar::-webkit-scrollbar { display: none; }
+
+    /* 推荐医生列表 */
+    .doctor-header { display:flex; align-items:center; margin-bottom:6px; }
+    .doctor-header-title { font-size:11px; color:var(--text-sub); flex:1; }
+    .doctor-more-btn { font-size:11px; color:var(--gold-mid); background:none; border:none; padding:0; cursor:pointer; }
+    .doctor-avatar-row { display:flex; gap:0; justify-content:space-between; }
+    .doctor-avatar-row::-webkit-scrollbar { display:none; }
+    .doctor-avatar-item { display:flex; flex-direction:column; align-items:center; gap:4px; flex:1; min-width:0; }
+    .doctor-avatar { width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,var(--gold-dark),var(--gold-mid)); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+    .doctor-avatar-name { font-size:10px; color:var(--text-primary); text-align:center; white-space:nowrap; }
+
+      margin-bottom: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--divider);
+    }
+    .related-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gold-mid);
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .related-label::before {
+      content: '';
+      width: 3px;
+      height: 12px;
+      background: linear-gradient(180deg, var(--gold-mid), var(--gold-dark));
+      border-radius: 2px;
+    }
+    .related-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      cursor: pointer;
+    }
+    .related-item:active { background: rgba(201,168,76,0.05); }
+    .related-thumb {
+      width: 56px;
+      height: 42px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      background: linear-gradient(135deg, #0d1f35, #1a2d45);
+      border: 1px solid rgba(201,168,76,0.2);
+      flex-shrink: 0;
+    }
+    .related-info { flex: 1; min-width: 0; }
+    .related-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.4;
+    }
+    .related-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .tab-btn {
+      flex-shrink: 0;
+      padding: 5px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(201,168,76,0.3);
+      background: transparent;
+      color: var(--text-sub);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold-mid));
+      border-color: var(--gold-light);
+      color: #000;
+      font-weight: 700;
+      box-shadow: 0 2px 10px rgba(201,168,76,0.4);
+    }
+    .tab-btn:not(.active):hover {
+      border-color: var(--gold-mid);
+      color: var(--gold-mid);
+    }
+
+    /* 内容条目 - 双列网格 */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .content-item {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 6px;
+      padding: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border-radius: var(--radius-md);
+      background: rgba(13,27,46,0.6);
+      border: 1px solid rgba(201,168,76,0.12);
+    }
+    .content-item:active { background: rgba(201,168,76,0.08); }
+
+    .content-item-top {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .content-thumb-wrap {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .rank-badge {
+      width: 22px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .rank-1 { color: var(--gold-light); text-shadow: 0 0 8px rgba(245,216,126,0.6); }
+    .rank-2 { color: var(--silver); }
+    .rank-3 { color: var(--bronze); }
+    .rank-n  { color: var(--text-muted); font-size: 13px; }
+
+    .content-thumb {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+      flex-shrink: 0;
+      background: var(--bg-card2);
+      position: relative;
+      overflow: hidden;
+    }
+    .content-thumb-mock {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      border-radius: var(--radius-sm);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      background: linear-gradient(135deg, #0d1f35, #1a2d45);
+      border: 1px solid rgba(201,168,76,0.2);
+    }
+
+    .content-info       { flex: 1; min-width: 0; }
+    .content-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.4;
+      margin-bottom: 4px;
+      min-height: 34px;
+    }
+    .content-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+    .content-meta span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 100%;
+    }
+    .content-meta .dot { color: var(--divider); }
+    .cert-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      background: rgba(201,168,76,0.15);
+      border: 1px solid rgba(201,168,76,0.4);
+      border-radius: 3px;
+      padding: 1px 5px;
+      font-size: 10px;
+      color: var(--gold-mid);
+      flex-shrink: 0;
+    }
+
+    .play-count {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* 查看更多按钮 */
+    .more-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      margin-top: 12px;
+      padding: 9px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(201,168,76,0.3);
+      background: rgba(201,168,76,0.06);
+      color: var(--gold-mid);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .more-btn:hover, .more-btn:active {
+      background: rgba(201,168,76,0.12);
+      border-color: var(--gold-mid);
+    }
+    .more-btn .arrow {
+      transition: transform 0.3s;
+      font-size: 12px;
+    }
+    .more-btn.expanded .arrow { transform: rotate(180deg); }
+
+    /* 隐藏的更多内容 */
+    .extra-content {
+      display: none;
+    }
+    .extra-content.show {
+      display: block;
+    }
+
+    /* ===== ④⑤ 左右榜单 ===== */
+    .ranking-row {
+      display: flex;
+      gap: 0;
+      margin: 0 16px 20px;
+    }
+    .ranking-panel {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--divider);
+      padding: 16px 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+      min-width: 0;
+    }
+    .ranking-panel:first-child {
+      border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+      border-right: none;
+      background:
+        linear-gradient(135deg, #0d1b2e 0%, #0a1628 100%);
+    }
+    .ranking-panel:last-child {
+      border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+      background:
+        linear-gradient(135deg, #110d25 0%, #0a0d1a 100%);
+      border-left: 1px solid var(--divider);
+    }
+
+    /* 中间金色分割线 */
+    .ranking-divider {
+      width: 1px;
+      background: linear-gradient(180deg, transparent, var(--gold-mid), transparent);
+      flex-shrink: 0;
+    }
+
+    .panel-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gold-light);
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .panel-title .icon { font-size: 14px; }
+
+    .author-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: background 0.2s;
+    }
+    .author-item:active { background: rgba(201,168,76,0.06); }
+
+    .author-rank {
+      width: 16px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    /* 圆形头像 (作者) */
+    .avatar-circle {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      border: 2px solid var(--gold-mid);
+      background: linear-gradient(135deg, #1a2d45, #0d1b2e);
+      box-shadow: 0 0 8px rgba(201,168,76,0.25);
+    }
+    /* 六边形头像 (专家) */
+    .avatar-hex {
+      width: 38px;
+      height: 38px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+      background: linear-gradient(135deg, var(--gold-mid), var(--gold-dark));
+      box-shadow: 0 0 10px rgba(201,168,76,0.3);
+    }
+
+    .author-info { flex: 1; min-width: 0; }
+    .author-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .author-dept {
+      font-size: 10px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 1px;
+    }
+    .author-count {
+      font-size: 10px;
+      color: var(--gold-mid);
+      margin-top: 2px;
+      white-space: nowrap;
+    }
+
+    .small-badge {
+      display: inline-block;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 9px;
+      line-height: 1.5;
+      flex-shrink: 0;
+    }
+    .badge-gold-v {
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold-mid));
+      color: #000;
+      font-weight: 700;
+    }
+    .badge-expert {
+      background: linear-gradient(135deg, #5a2d9e, #8b44d4);
+      color: #e8d4ff;
+      font-weight: 700;
+    }
+
+    .panel-more {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      width: 100%;
+      margin-top: 10px;
+      padding: 7px;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(201,168,76,0.25);
+      background: rgba(201,168,76,0.05);
+      color: var(--text-sub);
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .panel-more:active {
+      background: rgba(201,168,76,0.1);
+    }
+
+    /* ===== ⑥ 底部说明 ===== */
+    .footer {
+      margin: 0 16px 40px;
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--divider);
+      padding: 16px;
+    }
+    .footer-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      font-size: 13px;
+      color: var(--text-sub);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+    }
+    .footer-item:active { background: rgba(201,168,76,0.05); }
+    .footer-item .left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .footer-item .fi-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: rgba(201,168,76,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    .footer-item .arrow-right {
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    /* ===== 顶部NavBar ===== */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      background: rgba(6, 13, 26, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--divider);
+    }
+    .navbar-back {
+      font-size: 18px;
+      color: var(--gold-mid);
+      cursor: pointer;
+      padding: 4px 8px 4px 0;
+    }
+    .navbar-title {
+      flex: 1;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+    .navbar-share {
+      font-size: 16px;
+      color: var(--gold-mid);
+      cursor: pointer;
+      padding: 4px 0 4px 8px;
+    }
+
+    /* ===== 榜单 Tab 切换 ===== */
+    .ranking-section {
+      margin: 0 16px 20px;
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--divider);
+      padding: 16px 16px 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(201,168,76,0.08);
+    }
+    .ranking-tabs {
+      display: flex;
+      margin-bottom: 14px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--divider);
+    }
+    .ranking-tab-btn {
+      flex: 1;
+      padding: 8px 0;
+      background: transparent;
+      border: none;
+      color: var(--text-sub);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .ranking-tab-btn.active {
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold-mid));
+      color: #000;
+      box-shadow: 0 2px 8px rgba(201,168,76,0.3);
+    }
+    .ranking-tab-btn:not(.active):hover {
+      color: var(--gold-mid);
+      background: rgba(201,168,76,0.06);
+    }
+    .ranking-tab-pane { display: none; }
+    .ranking-tab-pane.active { display: block; }
+
+    /* 作者列表（榜单Tab内）宽度适应全宽 */
+    .ranking-section .author-item {
+      gap: 10px;
+    }
+    .ranking-section .avatar-circle,
+    .ranking-section .avatar-hex {
+      width: 42px;
+      height: 42px;
+      font-size: 20px;
+    }
+    .ranking-section .author-name { font-size: 13px; }
+    .ranking-section .author-dept { font-size: 11px; }
+    .ranking-section .author-count { font-size: 11px; }
+
+    /* ===== 体验入口区域 ===== */
+    .feedback-section {
+      margin: 0 16px 40px;
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--divider);
+      padding: 18px 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+    }
+    .feedback-entry-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .feedback-entry {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(201,168,76,0.06);
+      border: 1px solid var(--divider);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .feedback-entry:active,
+    .feedback-entry:hover { background: rgba(201,168,76,0.12); border-color: rgba(201,168,76,0.5); }
+    .feedback-entry .fe-icon { font-size: 22px; flex-shrink: 0; }
+    .feedback-entry .fe-text { font-size: 11px; color: var(--text-sub); line-height: 1.3; margin-top: 2px; }
+    .feedback-entry .fe-title { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+    .feedback-entry .fe-arrow { margin-left: auto; color: var(--text-muted); font-size: 14px; flex-shrink: 0; }
+  </style>
+
+  <style>
+    .feedback-fab {
+      position: fixed;
+      top: 72px;
+      right: 12px;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold-mid));
+      border-radius: 20px;
+      padding: 8px 6px;
+      cursor: pointer;
+      box-shadow: 0 2px 12px rgba(201,168,76,0.35);
+      writing-mode: vertical-rl;
+      font-size: 11px;
+      color: #060d1a;
+      font-weight: 600;
+      letter-spacing: 1px;
+      gap: 4px;
+      user-select: none;
+    }
+    .feedback-fab:active { opacity: 0.85; }
+    .feedback-fab-icon { font-size: 16px; writing-mode: horizontal-tb; }
+  </style>
+</head>
+<body>
+
+<!-- 调研反馈悬浮入口 -->
+<div class="feedback-fab" onclick="alert('调研反馈')">
+  <span class="feedback-fab-icon">📋</span>
+  <span>调研反馈</span>
+</div>
+
+<!-- 顶部导航栏 -->
+<nav class="navbar">
+  <span class="navbar-back" onclick="history.back()">‹</span>
+</nav>
+
+<!-- ① 大IP头部横幅 -->
+<section class="hero">
+  <h1 class="hero-title">百度健康·医选</h1>
+  <p class="hero-subtitle">甄选权威 · 鉴定真知 · 护航健康</p>
+
+</section>
+
+
+<!-- 推荐医生区块 -->
+<div class="section" style="padding-top:10px;padding-bottom:10px;">
+  <div id="doctorList"></div>
+</div>
+
+<!-- ③ 优质内容榜（卡片 1） -->
+<div class="section" data-card="1">
+  <div class="section-title">
+    <span class="gold-text">相关推荐</span>
+  </div>
+
+  <!-- Tab 栏 -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab(this,'症状')">症状</button>
+    <button class="tab-btn" onclick="switchTab(this,'饮食')">饮食</button>
+    <button class="tab-btn" onclick="switchTab(this,'病因')">病因</button>
+    <button class="tab-btn" onclick="switchTab(this,'并发症')">并发症</button>
+    <button class="tab-btn" onclick="switchTab(this,'用药')">用药</button>
+    <button class="tab-btn" onclick="switchTab(this,'其他')">其他</button>
+  </div>
+
+  <!-- TOP 5 默认展示 -->
+  <div id="contentList-1">
+    <div id="mainContent-1"></div>
+    <div class="extra-content" id="extraContent-1"></div>
+  </div>
+
+  <button class="more-btn" data-card="1" onclick="toggleMore(1)">
+    <span>查看更多内容</span>
+    <span class="arrow">▼</span>
+  </button>
+</div>
+
+<!-- ③ 优质内容榜（卡片 2） -->
+<div class="section" data-card="2">
+  <div class="section-title">
+    <span class="gold-text">科室甄选</span>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab(this,'内科')">内科</button>
+    <button class="tab-btn" onclick="switchTab(this,'外科')">外科</button>
+    <button class="tab-btn" onclick="switchTab(this,'儿科')">儿科</button>
+    <button class="tab-btn" onclick="switchTab(this,'骨科')">骨科</button>
+    <button class="tab-btn" onclick="switchTab(this,'神经科')">神经科</button>
+    <button class="tab-btn" onclick="switchTab(this,'皮肤科')">皮肤科</button>
+    <button class="tab-btn" onclick="switchTab(this,'肿瘤科')">肿瘤科</button>
+  </div>
+
+  <div id="contentList-2">
+    <div id="mainContent-2"></div>
+    <div class="extra-content" id="extraContent-2"></div>
+  </div>
+
+  <button class="more-btn" data-card="2" onclick="toggleMore(2)">
+    <span>查看更多内容</span>
+    <span class="arrow">▼</span>
+  </button>
+</div>
+
+<!-- ④⑤ 榜单 Tab 切换 -->
+<div class="ranking-section">
+  <div class="section-title" style="margin-bottom:12px;">
+    <span class="gold-text">荣誉榜单</span>
+  </div>
+
+  <div class="ranking-tabs">
+    <button class="ranking-tab-btn active" onclick="switchRankTab(this,'authorPane')">
+      ✍️ 优质作者榜
+    </button>
+    <button class="ranking-tab-btn" onclick="switchRankTab(this,'expertPane')">
+      🏅 医选专家榜
+    </button>
+  </div>
+
+  <!-- 优质作者榜 -->
+  <div class="ranking-tab-pane active" id="authorPane">
+
+    <div class="author-item">
+      <div class="author-rank rank-1">1</div>
+      <div class="avatar-circle">👨‍⚕️</div>
+      <div class="author-info">
+        <div class="author-name">张建国</div>
+        <div class="author-dept">心内科·主任医师 · 北京协和医院</div>
+        <div class="author-count">优质内容 56条</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="author-item">
+      <div class="author-rank rank-2">2</div>
+      <div class="avatar-circle">👩‍⚕️</div>
+      <div class="author-info">
+        <div class="author-name">王晓燕</div>
+        <div class="author-dept">内分泌科·副主任医师 · 复旦附属医院</div>
+        <div class="author-count">优质内容 43条</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="author-item">
+      <div class="author-rank rank-3">3</div>
+      <div class="avatar-circle">🧑‍💼</div>
+      <div class="author-info">
+        <div class="author-name">营养师小敏</div>
+        <div class="author-dept">健康内容优质作者</div>
+        <div class="author-count">优质内容 38条</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="author-item">
+      <div class="author-rank rank-n">4</div>
+      <div class="avatar-circle">👩‍⚕️</div>
+      <div class="author-info">
+        <div class="author-name">刘海涛</div>
+        <div class="author-dept">全科医学·主任 · 北大人民医院</div>
+        <div class="author-count">优质内容 31条</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="author-item">
+      <div class="author-rank rank-n">5</div>
+      <div class="avatar-circle">👨‍⚕️</div>
+      <div class="author-info">
+        <div class="author-name">李明辉</div>
+        <div class="author-dept">心内科·副主任医师 · 北京协和医院</div>
+        <div class="author-count">优质内容 27条</div>
+      </div>
+    </div>
+
+    <div id="moreAuthorList" style="display:none;">
+      <div class="divider"></div>
+      <div class="author-item">
+        <div class="author-rank rank-n">6</div>
+        <div class="avatar-circle">🧑‍💼</div>
+        <div class="author-info">
+          <div class="author-name">养生堂阿伟</div>
+          <div class="author-dept">健康内容优质作者</div>
+          <div class="author-count">优质内容 24条</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="author-item">
+        <div class="author-rank rank-n">7</div>
+        <div class="avatar-circle">🧑‍💼</div>
+        <div class="author-info">
+          <div class="author-name">健康管理琪琪</div>
+          <div class="author-dept">健康内容优质作者</div>
+          <div class="author-count">优质内容 21条</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="author-item">
+        <div class="author-rank rank-n">8</div>
+        <div class="avatar-circle">👨‍⚕️</div>
+        <div class="author-info">
+          <div class="author-name">赵文博</div>
+          <div class="author-dept">肿瘤内科·主治医师 · 天津肿瘤医院</div>
+          <div class="author-count">优质内容 18条</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="author-item">
+        <div class="author-rank rank-n">9</div>
+        <div class="avatar-circle">🧑‍💼</div>
+        <div class="author-info">
+          <div class="author-name">中医世家小慧</div>
+          <div class="author-dept">健康内容优质作者</div>
+          <div class="author-count">优质内容 15条</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="author-item">
+        <div class="author-rank rank-n">10</div>
+        <div class="avatar-circle">👨‍⚕️</div>
+        <div class="author-info">
+          <div class="author-name">吴建国</div>
+          <div class="author-dept">外科·主任医师 · 安贞医院</div>
+          <div class="author-count">优质内容 13条</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="panel-more" id="authorMoreBtn" onclick="toggleMoreAuthors()">查看更多作者 ›</button>
+  </div>
+
+  <!-- 医选专家榜 -->
+  <div class="ranking-tab-pane" id="expertPane">
+
+    <div class="author-item">
+      <div class="author-rank rank-1">1</div>
+      <div class="avatar-hex">👨‍🔬</div>
+      <div class="author-info">
+        <div class="author-name">王德明</div>
+        <div class="author-dept">院士·心血管内科 · 北京协和医院</div>
+        <div class="author-count">已推荐 312条</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="author-item">
+      <div class="author-rank rank-2">2</div>
+      <div class="avatar-hex">👩‍🔬</div>
+      <div class="author-info">
+        <div class="author-name">陈慧芳</div>
+        <div class="author-dept">教授·神经内科 · 四川大学华西医院</div>
+        <div class="author-count">已推荐 287条</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="author-item">
+      <div class="author-rank rank-3">3</div>
+      <div class="avatar-hex">👨‍🔬</div>
+      <div class="author-info">
+        <div class="author-name">刘文涛</div>
+        <div class="author-dept">主任委员·肿瘤内科 · 复旦大学附属</div>
+        <div class="author-count">已推荐 241条</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="author-item">
+      <div class="author-rank rank-n">4</div>
+      <div class="avatar-hex">👩‍🔬</div>
+      <div class="author-info">
+        <div class="author-name">孙晓华</div>
+        <div class="author-dept">教授·内分泌科 · 中山大学附属医院</div>
+        <div class="author-count">已推荐 198条</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="author-item">
+      <div class="author-rank rank-n">5</div>
+      <div class="avatar-hex">👨‍🔬</div>
+      <div class="author-info">
+        <div class="author-name">赵立新</div>
+        <div class="author-dept">主任医师·消化内科 · 上海瑞金医院</div>
+        <div class="author-count">已推荐 176条</div>
+      </div>
+    </div>
+
+    <div id="moreExpertList" style="display:none;">
+      <div class="divider"></div>
+      <div class="author-item">
+        <div class="author-rank rank-n">6</div>
+        <div class="avatar-hex">👨‍🔬</div>
+        <div class="author-info">
+          <div class="author-name">王晓峰</div>
+          <div class="author-dept">主任医师·神经内科 · 北京协和医院</div>
+          <div class="author-count">已推荐 145条</div>
+        </div>
+  
+      </div>
+      <div class="divider"></div>
+      <div class="author-item">
+        <div class="author-rank rank-n">7</div>
+        <div class="avatar-hex">👩‍🔬</div>
+        <div class="author-info">
+          <div class="author-name">陈志远</div>
+          <div class="author-dept">主任医师·呼吸内科 · 中山大学附属</div>
+          <div class="author-count">已推荐 128条</div>
+        </div>
+  
+      </div>
+      <div class="divider"></div>
+      <div class="author-item">
+        <div class="author-rank rank-n">8</div>
+        <div class="avatar-hex">👨‍🔬</div>
+        <div class="author-info">
+          <div class="author-name">刘海涛</div>
+          <div class="author-dept">主任·全科医学 · 北大人民医院</div>
+          <div class="author-count">已推荐 112条</div>
+        </div>
+  
+      </div>
+      <div class="divider"></div>
+      <div class="author-item">
+        <div class="author-rank rank-n">9</div>
+        <div class="avatar-hex">👩‍🔬</div>
+        <div class="author-info">
+          <div class="author-name">王晓燕</div>
+          <div class="author-dept">副主任医师·内分泌科 · 复旦附属医院</div>
+          <div class="author-count">已推荐 96条</div>
+        </div>
+  
+      </div>
+      <div class="divider"></div>
+      <div class="author-item">
+        <div class="author-rank rank-n">10</div>
+        <div class="avatar-hex">👨‍🔬</div>
+        <div class="author-info">
+          <div class="author-name">李建华</div>
+          <div class="author-dept">主任医师·骨科 · 积水潭医院</div>
+          <div class="author-count">已推荐 84条</div>
+        </div>
+  
+      </div>
+    </div>
+
+    <button class="panel-more" id="expertMoreBtn" onclick="toggleMoreExperts()">查看更多专家 ›</button>
+  </div>
+</div>
+
+
+<script>
+  // 科室内容数据
+  const deptData = {
+    '推荐': {
+      doctors: [
+        { name:'王德明', title:'主任医师', dept:'心内科', hospital:'北京协和医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+      ],
+      items: [
+        { emoji:'🩺', title:'高血压患者如何科学降压？医生告诉你真相', author:'李明辉医生 广州中山医院', play:'128.4万次播放', cert:'北京协和王德明医生鉴真' },
+        { emoji:'💊', title:'高血压用药误区大全，这些坑你踩过吗', author:'张建国医生 四川华西医院', play:'98.2万次播放', cert:'北京协和陈慧芳医生鉴真' },
+        { emoji:'🧬', title:'高血压患者的饮食禁忌，控盐只是第一步', author:'王晓燕医生 复旦附属医院', play:'87.6万次播放', cert:'复旦附属刘文涛医生鉴真' },
+        { emoji:'❤️', title:'高血压会引发哪些并发症？提前预防是关键', author:'陈志远医生 中山大学附属医院', play:'65.3万次播放', cert:'中山大学孙晓华医生鉴真' },
+        { emoji:'🏃', title:'高血压患者能运动吗？什么强度才安全', author:'刘海涛医生 北大人民医院', play:'54.1万次播放', cert:'北大人民赵立新医生鉴真' },
+        { emoji:'😴', title:'高血压与睡眠的关系，晚上血压高怎么办', author:'周国平医生 瑞金医院', play:'33.8万次播放', cert:'瑞金医院刘文涛医生鉴真' },
+        { emoji:'🔬', title:'血压计怎么正确使用？家庭测压注意事项', author:'赵文博医生 天津肿瘤医院', play:'48.7万次播放', cert:'天津医院王德明医生鉴真' },
+        { emoji:'🧠', title:'年轻人也会得高血压？这些危险因素要注意', author:'孙慧敏医生 华西医院', play:'39.2万次播放', cert:'华西医院陈慧芳医生鉴真' },
+        { emoji:'🧂', title:'低钠盐真的能降压吗？专家详细解答', author:'李明辉医生 广州中山医院', play:'28.6万次播放', cert:'北京协和王德明医生鉴真' },
+        { emoji:'🍵', title:'高血压能喝咖啡吗？饮用注意事项详解', author:'张建国医生 四川华西医院', play:'24.3万次播放', cert:'北京协和陈慧芳医生鉴真' },
+        { emoji:'⚖️', title:'高血压患者如何在家自测血压才准确', author:'王晓燕医生 复旦附属医院', play:'21.5万次播放', cert:'复旦附属刘文涛医生鉴真' },
+        { emoji:'💡', title:'高血压患者冬季注意事项，保暖是关键', author:'陈志远医生 中山大学附属医院', play:'19.8万次播放', cert:'中山大学孙晓华医生鉴真' },
+      ],
+    },
+    '内科': {
+      doctors: [
+        { name:'王德明', title:'主任医师', dept:'心内科', hospital:'北京协和医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+        { name:'陈慧芳', title:'副主任医师', dept:'内分泌科', hospital:'北京协和医院', emoji:'👩‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+        { name:'刘文涛', title:'主任医师', dept:'消化内科', hospital:'复旦附属医院', emoji:'👨‍⚕️', rank:'全国综合排行A+++' },
+        { name:'赵立新', title:'主任医师', dept:'呼吸内科', hospital:'北大人民医院', emoji:'👨‍⚕️', rank:'复旦榜A++' },
+      ],
+      items: [
+        { emoji:'🫀', title:'心脏病患者日常饮食该注意哪些？这几点一定要记住', author:'张建国医生 四川华西医院', play:'128.4万次播放', cert:'北京协和王德明医生鉴真' },
+        { emoji:'💊', title:'糖尿病患者每日血糖控制目标，这张表收好', author:'王晓燕医生 复旦附属医院', play:'87.6万次播放', cert:'复旦附属刘文涛医生鉴真' },
+        { emoji:'🫁', title:'慢性阻塞性肺疾病日常管理，肺科专家详解', author:'陈志远医生 中山大学附属医院', play:'65.3万次播放', cert:'中山大学孙晓华医生鉴真' },
+        { emoji:'🩺', title:'体检报告出现这几个指标异常，别慌，医生来解读', author:'刘海涛医生 北大人民医院', play:'54.1万次播放', cert:'北大人民赵立新医生鉴真' },
+        { emoji:'💉', title:'甲状腺结节该不该手术？医生手把手教你看报告', author:'周国平医生 瑞金医院', play:'33.8万次播放', cert:'瑞金医院刘文涛医生鉴真' },
+        { emoji:'🔬', title:'肿瘤标志物升高就是癌症？别被吓到，听专家分析', author:'赵文博医生 天津肿瘤医院', play:'48.7万次播放', cert:'天津肿瘤王德明医生鉴真' },
+        { emoji:'🧠', title:'头痛的这几种类型，一定要学会区分', author:'孙慧敏医生 华西医院', play:'39.2万次播放', cert:'华西医院陈慧芳医生鉴真' },
+        { emoji:'🧬', title:'痛风急性发作如何处理？内科医生详解', author:'李明辉医生 广州中山医院', play:'55.7万次播放', cert:'北京协和陈慧芳医生鉴真' },
+        { emoji:'💓', title:'心律失常是心脏病吗？出现这些症状要警惕', author:'张建国医生 四川华西医院', play:'42.6万次播放', cert:'北京协和王德明医生鉴真' },
+        { emoji:'🩸', title:'贫血不一定是缺铁，这些原因都要查', author:'王晓燕医生 复旦附属医院', play:'36.8万次播放', cert:'复旦附属刘文涛医生鉴真' },
+        { emoji:'🫃', title:'胃痛反复发作怎么办？常见胃病对照表', author:'陈志远医生 中山大学附属医院', play:'29.4万次播放', cert:'中山大学孙晓华医生鉴真' },
+        { emoji:'🧪', title:'肝功能检查指标解读，哪些数值要重点关注', author:'刘海涛医生 北大人民医院', play:'25.7万次播放', cert:'北大人民赵立新医生鉴真' },
+      ],
+    },
+    '外科': {
+      doctors: [
+        { name:'张伟', title:'主任医师', dept:'普外科', hospital:'北京协和医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+        { name:'王立', title:'副主任医师', dept:'肝胆外科', hospital:'复旦附属医院', emoji:'👨‍⚕️', rank:'全国综合排行A+++' },
+        { name:'李伟', title:'主任医师', dept:'胃肠外科', hospital:'中山大学附属', emoji:'👨‍⚕️', rank:'复旦榜A++' },
+        { name:'周海', title:'副主任医师', dept:'胸外科', hospital:'华西医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+      ],
+      items: [
+        { emoji:'🔪', title:'胆结石该不该做手术？外科医生详解手术指征', author:'林建华医生 北京协和医院', play:'76.5万次播放', cert:'北京协和张伟医生鉴真' },
+        { emoji:'🏥', title:'胆囊切除后饮食如何调整？这几点很关键', author:'陈大勇医生 复旦附属医院', play:'62.3万次播放', cert:'复旦附属王立医生鉴真' },
+        { emoji:'🩻', title:'胆结石会自己消失吗？体外碎石有效果吗', author:'刘志强医生 中山大学附属医院', play:'55.8万次播放', cert:'中山大学李伟医生鉴真' },
+        { emoji:'💊', title:'胆结石疼痛发作怎么缓解？急性胆绞痛处理', author:'赵国明医生 华西医院', play:'48.2万次播放', cert:'华西医院周海医生鉴真' },
+        { emoji:'🥗', title:'预防胆结石，这几种食物要少吃', author:'孙志远医生 安贞医院', play:'39.7万次播放', cert:'安贞医院钱文医生鉴真' },
+        { emoji:'🩺', title:'胆结石与胆囊息肉怎么区分？超声报告解读', author:'吴晓明医生 北京天坛医院', play:'31.5万次播放', cert:'北大人民王健医生鉴真' },
+        { emoji:'🔬', title:'无症状胆结石需要治疗吗？医生给出建议', author:'郑海涛医生 瑞金医院', play:'27.4万次播放', cert:'瑞金医院陈立医生鉴真' },
+        { emoji:'🏋', title:'胆结石术后多久可以恢复正常生活？', author:'钱晓峰医生 协和医院', play:'22.1万次播放', cert:'协和医院李强医生鉴真' },
+        { emoji:'🩹', title:'阑尾炎一定要手术吗？保守治疗可行吗', author:'林建华医生 北京协和医院', play:'45.6万次播放', cert:'北京协和张伟医生鉴真' },
+        { emoji:'🫁', title:'肺结节手术指征是什么？多大的结节需要处理', author:'陈大勇医生 复旦附属医院', play:'38.2万次播放', cert:'复旦附属王立医生鉴真' },
+        { emoji:'🦵', title:'静脉曲张不治疗会怎样？外科医生答疑', author:'刘志强医生 中山大学附属医院', play:'32.7万次播放', cert:'中山大学李伟医生鉴真' },
+        { emoji:'🩸', title:'痔疮手术怎么做？术后护理全攻略', author:'赵国明医生 华西医院', play:'28.4万次播放', cert:'华西医院周海医生鉴真' },
+      ],
+    },
+    '儿科': {
+      doctors: [
+        { name:'王明', title:'主任医师', dept:'儿科', hospital:'北京儿童医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+        { name:'赵华', title:'副主任医师', dept:'儿科', hospital:'复旦大学附属', emoji:'👩‍⚕️', rank:'全国综合排行A+++' },
+        { name:'刘强', title:'主任医师', dept:'儿童感染科', hospital:'中山大学附属', emoji:'👨‍⚕️', rank:'复旦榜A++' },
+        { name:'孙艳', title:'副主任医师', dept:'儿科营养', hospital:'华西医院', emoji:'👩‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+      ],
+      items: [
+        { emoji:'🌡️', title:'宝宝反复发烧怎么办？儿科医生详细解答', author:'张慧敏医生 北京儿童医院', play:'112.6万次播放', cert:'北京儿童王明医生鉴真' },
+        { emoji:'💊', title:'小儿发烧什么时候用退烧药？剂量怎么算', author:'李晓燕医生 复旦儿科医院', play:'98.3万次播放', cert:'复旦儿科赵华医生鉴真' },
+        { emoji:'🧊', title:'发烧物理降温有效吗？冷敷还是温水擦拭', author:'陈文博医生 中山大学附属医院', play:'85.7万次播放', cert:'中山附属刘强医生鉴真' },
+        { emoji:'👶', title:'发烧伴随惊厥怎么处理？家长必学急救', author:'周晓华医生 华西医院', play:'72.4万次播放', cert:'华西儿科孙艳医生鉴真' },
+        { emoji:'🩺', title:'发烧多少度需要去医院？这个标准要记住', author:'吴志远医生 北大人民医院', play:'58.9万次播放', cert:'北大人民王雪医生鉴真' },
+        { emoji:'🍼', title:'婴儿发烧和长牙发烧怎么区分？', author:'郑建国医生 同仁医院', play:'46.3万次播放', cert:'同仁医院陈波医生鉴真' },
+        { emoji:'🌿', title:'发烧期间饮食注意什么？这些食物要避开', author:'赵晓峰医生 儿童医院', play:'38.5万次播放', cert:'儿童医院张强医生鉴真' },
+        { emoji:'🫁', title:'退烧后为什么又反弹？三峰热现象解析', author:'孙海涛医生 呼研所', play:'29.7万次播放', cert:'呼研所李明医生鉴真' },
+        { emoji:'🤧', title:'宝宝咳嗽有痰咳不出？这几招帮宝宝排痰', author:'张慧敏医生 北京儿童医院', play:'67.8万次播放', cert:'北京儿童王明医生鉴真' },
+        { emoji:'💉', title:'宝宝疫苗接种时间表及注意事项', author:'李晓燕医生 复旦儿科医院', play:'54.6万次播放', cert:'复旦儿科赵华医生鉴真' },
+        { emoji:'🥛', title:'婴儿奶粉怎么选？配方表逐项解读', author:'陈文博医生 中山大学附属医院', play:'42.3万次播放', cert:'中山附属刘强医生鉴真' },
+        { emoji:'😴', title:'宝宝夜醒频繁怎么办？儿科医生有妙招', author:'周晓华医生 华西医院', play:'35.9万次播放', cert:'华西儿科孙艳医生鉴真' },
+      ],
+    },
+    '骨科': {
+      doctors: [
+        { name:'陈华', title:'主任医师', dept:'脊柱外科', hospital:'北京积水潭医院', emoji:'👨‍⚕️', rank:'全国综合排行A++' },
+        { name:'刘强', title:'主任医师', dept:'关节科', hospital:'北京协和医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+        { name:'王伟', title:'副主任医师', dept:'骨科', hospital:'华西医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+        { name:'赵明', title:'主任医师', dept:'骨创伤科', hospital:'复旦附属医院', emoji:'👨‍⚕️', rank:'全国综合排行A+++' },
+      ],
+      items: [
+        { emoji:'🦴', title:'腰椎间盘突出症必须手术吗？骨科医生告诉你', author:'王建明医生 北京积水潭医院', play:'103.8万次播放', cert:'北京积水潭陈华医生鉴真' },
+        { emoji:'🩻', title:'腰椎间盘突出和腰肌劳损怎么区分？', author:'李志强医生 北京协和医院', play:'87.2万次播放', cert:'北京协和刘强医生鉴真' },
+        { emoji:'💪', title:'腰椎间盘突出保守治疗有哪些方法？', author:'陈文涛医生 华西医院', play:'74.6万次播放', cert:'华西医院王伟医生鉴真' },
+        { emoji:'🏃', title:'腰椎突出患者能做哪些运动？禁忌动作有哪些', author:'周建华医生 复旦附属医院', play:'61.3万次播放', cert:'复旦附属赵明医生鉴真' },
+        { emoji:'🛏️', title:'腰椎间盘突出患者睡什么床好？硬板还是软床', author:'吴晓峰医生 中山大学附属医院', play:'52.7万次播放', cert:'中山大学孙立医生鉴真' },
+        { emoji:'💊', title:'治疗腰椎突出的药物有哪些？用药注意事项', author:'郑志远医生 北大人民医院', play:'43.9万次播放', cert:'北大人民钱华医生鉴真' },
+        { emoji:'🔬', title:'腰椎间盘突出手术后多久能恢复？', author:'赵国平医生 瑞金医院', play:'35.4万次播放', cert:'瑞金医院陈强医生鉴真' },
+        { emoji:'⚕️', title:'腰椎间盘突出反复发作怎么办？预防措施详解', author:'孙志明医生 积水潭医院', play:'27.8万次播放', cert:'积水潭医院王健医生鉴真' },
+        { emoji:'🦵', title:'膝盖疼是怎么回事？不同部位疼痛对照表', author:'王建明医生 北京积水潭医院', play:'58.3万次播放', cert:'北京积水潭陈华医生鉴真' },
+        { emoji:'🧊', title:'半月板损伤一定要手术吗？能自行恢复吗', author:'李志强医生 北京协和医院', play:'46.7万次播放', cert:'北京协和刘强医生鉴真' },
+        { emoji:'🪜', title:'肩周炎和肩袖损伤怎么区分？', author:'陈文涛医生 华西医院', play:'38.4万次播放', cert:'华西医院王伟医生鉴真' },
+        { emoji:'🦶', title:'脚踝扭伤如何正确处理？常见误区要避开', author:'周建华医生 复旦附属医院', play:'31.5万次播放', cert:'复旦附属赵明医生鉴真' },
+      ],
+    },
+    '神经科': {
+      doctors: [
+        { name:'王立', title:'主任医师', dept:'神经内科', hospital:'北京天坛医院', emoji:'👨‍⚕️', rank:'全国综合排行A+++' },
+        { name:'赵强', title:'教授', dept:'神经内科', hospital:'北京协和医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+        { name:'刘明', title:'副主任医师', dept:'神经科', hospital:'华西医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+        { name:'孙波', title:'主任医师', dept:'脑血管科', hospital:'协和医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+      ],
+      items: [
+        { emoji:'🧠', title:'脑梗死来了如何快速识别？记住这个口诀', author:'陈志远医生 中山大学附属医院', play:'135.2万次播放', cert:'北京天坛王立医生鉴真' },
+        { emoji:'💊', title:'脑梗后遗症如何康复？神经科专家全程指导', author:'李海涛医生 北京协和医院', play:'97.8万次播放', cert:'北京协和赵强医生鉴真' },
+        { emoji:'🏃', title:'脑梗患者能做哪些康复训练？居家方案推荐', author:'张建国医生 四川华西医院', play:'84.3万次播放', cert:'华西医院刘明医生鉴真' },
+        { emoji:'🩺', title:'脑梗死二级预防怎么做？抗板药能停吗', author:'王晓峰医生 协和医院', play:'71.5万次播放', cert:'协和医院孙波医生鉴真' },
+        { emoji:'💡', title:'脑梗和脑出血如何区分？症状和处理不同', author:'刘志强医生 中山大学附属医院', play:'58.9万次播放', cert:'天坛医院陈文医生鉴真' },
+        { emoji:'🥗', title:'脑梗患者的饮食管理，这几类食物要控制', author:'周建华医生 复旦附属医院', play:'47.6万次播放', cert:'复旦附属王华医生鉴真' },
+        { emoji:'🧬', title:'什么人容易脑梗？高危因素早知道早预防', author:'吴海明医生 中山大学附属医院', play:'38.2万次播放', cert:'中山大学李立医生鉴真' },
+        { emoji:'❤️', title:'房颤会引发脑梗？心脏和大脑的关系详解', author:'郑志华医生 北大人民医院', play:'29.4万次播放', cert:'北大人民钱强医生鉴真' },
+        { emoji:'😵', title:'头晕是颈椎病还是脑供血不足？', author:'陈志远医生 中山大学附属医院', play:'52.4万次播放', cert:'北京天坛王立医生鉴真' },
+        { emoji:'😴', title:'失眠是神经衰弱吗？如何正确治疗', author:'李海涛医生 北京协和医院', play:'45.7万次播放', cert:'北京协和赵强医生鉴真' },
+        { emoji:'🧠', title:'老年痴呆早期信号，这10个表现要警惕', author:'张建国医生 四川华西医院', play:'39.3万次播放', cert:'华西医院刘明医生鉴真' },
+        { emoji:'🫨', title:'手抖是什么原因？特发性震颤怎么治', author:'王晓峰医生 协和医院', play:'32.6万次播放', cert:'协和医院孙波医生鉴真' },
+      ],
+    },
+    '皮肤科': {
+      doctors: [
+        { name:'陈华', title:'主任医师', dept:'皮肤科', hospital:'北京协和医院', emoji:'👩‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+        { name:'王明', title:'副主任医师', dept:'皮肤科', hospital:'复旦附属医院', emoji:'👨‍⚕️', rank:'全国综合排行A+++' },
+        { name:'刘强', title:'主任医师', dept:'皮肤科', hospital:'华西医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+        { name:'孙立', title:'副主任医师', dept:'皮肤科', hospital:'协和医院', emoji:'👩‍⚕️', rank:'复旦榜A++' },
+      ],
+      items: [
+        { emoji:'🌟', title:'痤疮的成因是什么？皮肤科医生从根源讲清楚', author:'林晓燕医生 北京协和医院', play:'118.7万次播放', cert:'北京协和陈华医生鉴真' },
+        { emoji:'💊', title:'痤疮用药指南：外用药和口服药怎么选', author:'张慧敏医生 北京儿童医院', play:'96.4万次播放', cert:'复旦附属王明医生鉴真' },
+        { emoji:'🌿', title:'痤疮饮食禁忌：牛奶、甜食真的会加重吗', author:'陈志远医生 中山大学附属医院', play:'82.5万次播放', cert:'华西医院刘强医生鉴真' },
+        { emoji:'🔬', title:'痘印怎么消？激光还是涂抹祛疤膏效果好', author:'王建明医生 北京积水潭医院', play:'67.3万次播放', cert:'协和医院孙立医生鉴真' },
+        { emoji:'☀️', title:'长痘还能用防晒霜吗？痤疮肌护肤全攻略', author:'李晓峰医生 瑞金医院', play:'54.8万次播放', cert:'瑞金医院赵华医生鉴真' },
+        { emoji:'🩺', title:'成人痤疮和青少年痘痘有什么不同？', author:'刘志华医生 北京协和医院', play:'43.6万次播放', cert:'北大人民钱明医生鉴真' },
+        { emoji:'⚕️', title:'囊肿型痤疮怎么治？光动力和激光方案解析', author:'周国平医生 瑞金医院', play:'35.1万次播放', cert:'中山大学陈强医生鉴真' },
+        { emoji:'🌺', title:'痘痘反复发作怎么办？内分泌调节是关键吗', author:'吴晓明医生 北京天坛医院', play:'28.7万次播放', cert:'天坛医院王波医生鉴真' },
+        { emoji:'🧴', title:'湿疹反复发作怎么办？皮肤护理要点', author:'林晓燕医生 北京协和医院', play:'62.5万次播放', cert:'北京协和陈华医生鉴真' },
+        { emoji:'🧚', title:'荨麻疹是怎么引起的？快速止痒的方法', author:'张慧敏医生 北京儿童医院', play:'48.9万次播放', cert:'复旦附属王明医生鉴真' },
+        { emoji:'🌞', title:'如何正确防晒？SPF和PA到底怎么选', author:'陈志远医生 中山大学附属医院', play:'39.7万次播放', cert:'华西医院刘强医生鉴真' },
+        { emoji:'💅', title:'灰指甲是怎么得的？能彻底治好吗', author:'王建明医生 北京积水潭医院', play:'32.4万次播放', cert:'协和医院孙立医生鉴真' },
+      ],
+    },
+    '肿瘤科': {
+      doctors: [
+        { name:'王德明', title:'主任医师', dept:'肿瘤内科', hospital:'天津肿瘤医院', emoji:'👨‍⚕️', rank:'全国综合排行A+++' },
+        { name:'刘强', title:'教授', dept:'肿瘤科', hospital:'复旦肿瘤医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+        { name:'王华', title:'主任医师', dept:'胸部肿瘤', hospital:'北京协和医院', emoji:'👩‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+        { name:'孙立', title:'副主任医师', dept:'肿瘤内科', hospital:'华西医院', emoji:'👨‍⚕️', rank:'复旦榜|全国医院综合排行A+++' },
+      ],
+      items: [
+        { emoji:'🔬', title:'肺癌早期筛查怎么做？低剂量CT适合哪些人', author:'赵文博医生 天津肿瘤医院', play:'124.3万次播放', cert:'天津肿瘤王德明医生鉴真' },
+        { emoji:'🩻', title:'肺结节是肺癌吗？不同大小的处理建议', author:'陈志远医生 中山大学附属医院', play:'98.7万次播放', cert:'复旦肿瘤刘强医生鉴真' },
+        { emoji:'💊', title:'肺癌靶向治疗效果如何？哪些患者适合', author:'李建华医生 北京协和医院', play:'85.2万次播放', cert:'北京协和王华医生鉴真' },
+        { emoji:'🧬', title:'肺癌的基因检测有什么用？检测前必读', author:'张晓峰医生 华西医院', play:'72.6万次播放', cert:'华西医院孙立医生鉴真' },
+        { emoji:'🌿', title:'肺癌手术后饮食和康复全指南', author:'王志明医生 中山大学附属医院', play:'59.4万次播放', cert:'中山大学陈文医生鉴真' },
+        { emoji:'💉', title:'肺癌免疫治疗和化疗怎么选？医生详解', author:'刘海涛医生 北大人民医院', play:'47.8万次播放', cert:'瑞金医院李明医生鉴真' },
+        { emoji:'🩺', title:'肺癌有哪些早期症状？这6个信号要警惕', author:'孙慧敏医生 华西医院', play:'38.5万次播放', cert:'北大人民赵强医生鉴真' },
+        { emoji:'⚕️', title:'肺癌放疗副作用怎么应对？医生给出对策', author:'吴建国医生 安贞医院', play:'29.3万次播放', cert:'安贞医院钱华医生鉴真' },
+        { emoji:'🍎', title:'胃癌早期有什么症状？这5个信号别忽视', author:'赵文博医生 天津肿瘤医院', play:'68.4万次播放', cert:'天津肿瘤王德明医生鉴真' },
+        { emoji:'🧪', title:'肝癌的早期筛查方法有哪些？高危人群必看', author:'陈志远医生 中山大学附属医院', play:'54.7万次播放', cert:'复旦肿瘤刘强医生鉴真' },
+        { emoji:'🎀', title:'乳腺癌怎么自检？这几个步骤要学会', author:'李建华医生 北京协和医院', play:'45.3万次播放', cert:'北京协和王华医生鉴真' },
+        { emoji:'🩹', title:'化疗期间饮食调理，增强体质有方法', author:'张晓峰医生 华西医院', play:'37.8万次播放', cert:'华西医院孙立医生鉴真' },
+      ],
+    },
+  };
+
+  // 内容榜 Tab 切换
+  function switchTab(el, dept) {
+    // 仅取消同一张卡片内的 active
+    const tabBar = el.parentElement;
+    tabBar.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    // 找到所属卡片 id
+    const card = tabBar.parentElement.getAttribute('data-card');
+    renderDeptList(card, dept);
+    // 收起该卡片展开状态
+    const extra = document.getElementById('extraContent-' + card);
+    const btn   = document.querySelector('.more-btn[data-card="' + card + '"]');
+    if (extra) extra.classList.remove('show');
+    if (btn) {
+      btn.classList.remove('expanded');
+      btn.querySelector('span:first-child').textContent = '查看更多内容';
+    }
+  }
+
+  // 第一张卡片专用数据（高血压科普各维度）
+  const card1Data = {
+    '症状': [
+      { emoji:'🩸', title:'糖尿病早期有哪些信号？这5个表现要留意', author:'林慧芳医生 四川华西医院', play:'118.5万次播放', cert:'四川华西林慧芳医生鉴真' },
+      { emoji:'📊', title:'血糖高和糖尿病，其实不是一回事', author:'吴德明医生 上海瑞金医院', play:'96.3万次播放', cert:'上海瑞金吴德明医生鉴真' },
+      { emoji:'🦶', title:'糖尿病足早期是什么样的？图文对照自查', author:'胡建平医生 广州珠江医院', play:'85.7万次播放', cert:'广州珠江胡建平医生鉴真' },
+      { emoji:'🖐️', title:'手麻、脚麻、针刺感，可能是糖尿病神经病变', author:'吴文涛医生 广州珠江医院', play:'74.2万次播放', cert:'广州珠江吴文涛医生鉴真' },
+      { emoji:'⚠️', title:'糖尿病开始加重时，身体会有这些变化', author:'李明辉医生 广州中山医院', play:'68.4万次播放', cert:'广州中山李明辉医生鉴真' },
+      { emoji:'🧴', title:'皮肤瘙痒反复不好，有时候和血糖有关', author:'孙永红医生 广州中山医院', play:'59.6万次播放', cert:'广州中山孙永红医生鉴真' },
+      { emoji:'💧', title:'口渴、多尿是糖尿病的典型症状，但不只这些', author:'徐德明医生 西安交大一附院', play:'52.3万次播放', cert:'西安交大徐德明医生鉴真' },
+      { emoji:'⚖️', title:'体重莫名下降，可能是血糖控制出了问题', author:'何丽华医生 上海中山医院', play:'47.8万次播放', cert:'上海中山何丽华医生鉴真' },
+      { emoji:'👁️', title:'眼睛模糊视力下降，糖尿病患者要警惕', author:'杨国华医生 西安交大一附院', play:'42.5万次播放', cert:'西安交大杨国华医生鉴真' },
+      { emoji:'🩹', title:'伤口愈合变慢，可能是糖尿病信号之一', author:'赵明辉医生 北京协和医院', play:'38.9万次播放', cert:'北京协和赵明辉医生鉴真' },
+      { emoji:'❤️', title:'糖尿病和高血压同时存在，有哪些特殊表现', author:'孙伟强医生 武汉协和医院', play:'33.2万次播放', cert:'武汉协和孙伟强医生鉴真' },
+      { emoji:'🔢', title:'如何区分1型和2型糖尿病的症状差异', author:'郭文涛医生 上海瑞金医院', play:'28.7万次播放', cert:'上海瑞金郭文涛医生鉴真' },
+    ],
+    '饮食': [
+      { emoji:'🍎', title:'糖尿病能吃水果吗？哪些可以吃，怎么吃', author:'何建国医生 北京协和医院', play:'142.5万次播放', cert:'北京协和何建国医生鉴真' },
+      { emoji:'🍚', title:'糖尿病人一日三餐怎么安排比较合适', author:'孙明辉医生 广州中山医院', play:'128.4万次播放', cert:'广州中山孙明辉医生鉴真' },
+      { emoji:'🍬', title:'木糖醇、麦芽糖醇对糖尿病人真的安全吗', author:'林明辉医生 西安交大一附院', play:'98.7万次播放', cert:'西安交大林明辉医生鉴真' },
+      { emoji:'🚫', title:'控糖不只是少吃糖，这些饮食误区很常见', author:'郭文涛医生 上海瑞金医院', play:'87.6万次播放', cert:'北京协和郭文涛医生鉴真' },
+      { emoji:'💦', title:'糖尿病人喝水有讲究吗？几个注意事项', author:'孙雪梅医生 西安交大一附院', play:'76.3万次播放', cert:'西安交大孙雪梅医生鉴真' },
+      { emoji:'📈', title:'升糖指数是什么？糖尿病人怎么用它选食物', author:'黄永红医生 广州珠江医院', play:'68.9万次播放', cert:'广州珠江黄永红医生鉴真' },
+      { emoji:'🌾', title:'主食怎么吃才不容易升血糖，粗细粮怎么搭配', author:'郭明辉医生 上海华山医院', play:'62.4万次播放', cert:'上海华山郭明辉医生鉴真' },
+      { emoji:'🍽️', title:'糖尿病患者外出就餐，点菜时要注意什么', author:'张海涛医生 西安交大一附院', play:'54.8万次播放', cert:'西安交大张海涛医生鉴真' },
+      { emoji:'🥣', title:'糖尿病人可以喝粥吗？稀饭对血糖影响有多大', author:'林建军医生 武汉协和医院', play:'48.2万次播放', cert:'武汉协和林建军医生鉴真' },
+      { emoji:'🥦', title:'蔬菜对血糖友好，但这几类要适量控制', author:'徐晓燕医生 南京鼓楼医院', play:'42.7万次播放', cert:'南京鼓楼徐晓燕医生鉴真' },
+      { emoji:'🍰', title:'糖尿病人需要忌口所有甜食吗？怎么科学看待', author:'王丽华医生 北京朝阳医院', play:'37.5万次播放', cert:'北京朝阳王丽华医生鉴真' },
+      { emoji:'🏃', title:'运动前后怎么吃，帮助糖尿病人稳定血糖', author:'赵德明医生 北京人民医院', play:'32.6万次播放', cert:'北京人民赵德明医生鉴真' },
+    ],
+    '病因': [
+      { emoji:'🔬', title:'糖尿病是怎么发生的？主要原因有哪些', author:'朱立新医生 广州中山医院', play:'108.3万次播放', cert:'广州中山朱立新医生鉴真' },
+      { emoji:'🆎', title:'1型和2型糖尿病有什么区别', author:'高永红医生 上海瑞金医院', play:'92.6万次播放', cert:'上海瑞金高永红医生鉴真' },
+      { emoji:'⚖️', title:'肥胖和糖尿病的关系，医学上怎么解释', author:'孙永红医生 广州中山医院', play:'84.5万次播放', cert:'武汉协和孙永红医生鉴真' },
+      { emoji:'👨‍👩‍👧', title:'家里有人得糖尿病，自己患病风险会更高吗', author:'孙伟强医生 武汉协和医院', play:'73.2万次播放', cert:'北京人民孙伟强医生鉴真' },
+      { emoji:'📊', title:'血糖偏高但还没到糖尿病，叫糖尿病前期，该怎么办', author:'刘建平医生 西安交大一附院', play:'65.8万次播放', cert:'西安交大刘建平医生鉴真' },
+      { emoji:'👱', title:'年轻人也会得糖尿病吗？哪些人需要重点筛查', author:'吴秀英医生 湖南湘雅医院', play:'58.4万次播放', cert:'湖南湘雅吴秀英医生鉴真' },
+      { emoji:'🤰', title:'妊娠糖尿病是怎么回事，产后会恢复吗', author:'陈雪梅医生 西安交大一附院', play:'52.7万次播放', cert:'西安交大陈雪梅医生鉴真' },
+      { emoji:'😰', title:'长期压力大、睡眠差，和糖尿病发病有关吗', author:'王志远医生 浙江邵逸夫医院', play:'47.3万次播放', cert:'浙江邵逸夫王志远医生鉴真' },
+      { emoji:'💉', title:'胰岛素抵抗是什么，和2型糖尿病有什么关系', author:'罗春燕医生 广州中山医院', play:'42.8万次播放', cert:'广州中山罗春燕医生鉴真' },
+      { emoji:'🧒', title:'儿童青少年糖尿病的发病原因和成人有什么不同', author:'刘立新医生 武汉协和医院', play:'37.6万次播放', cert:'武汉协和刘立新医生鉴真' },
+      { emoji:'🔄', title:'糖尿病前期能逆转吗？需要做哪些改变', author:'何明辉医生 广州南方医院', play:'32.5万次播放', cert:'广州南方何明辉医生鉴真' },
+      { emoji:'💊', title:'哪些药物长期使用可能影响血糖水平', author:'张建国医生 四川华西医院', play:'28.4万次播放', cert:'四川华西张建国医生鉴真' },
+    ],
+    '并发症': [
+      { emoji:'🩺', title:'糖尿病常见的并发症有哪些，怎么预防', author:'林玉兰医生 重庆西南医院', play:'135.7万次播放', cert:'重庆西南林玉兰医生鉴真' },
+      { emoji:'🫘', title:'糖尿病肾病是怎么发展的，到透析阶段意味着什么', author:'朱德明医生 广州中山医院', play:'98.4万次播放', cert:'广州中山朱德明医生鉴真' },
+      { emoji:'🦶', title:'糖尿病足为什么难治，早期如何干预', author:'罗慧芳医生 湖南湘雅医院', play:'87.6万次播放', cert:'湖南湘雅罗慧芳医生鉴真' },
+      { emoji:'👁️', title:'糖尿病对眼睛的影响：糖尿病视网膜病变科普', author:'孙秀英医生 西安交大一附院', play:'78.3万次播放', cert:'西安交大孙秀英医生鉴真' },
+      { emoji:'⬇️', title:'低血糖比高血糖更危险？糖尿病人需要了解的知识', author:'胡立新医生 天津总医院', play:'69.5万次播放', cert:'天津总医胡立新医生鉴真' },
+      { emoji:'📅', title:'糖尿病患者的寿命和什么有关，控制好这几点很关键', author:'孙晓明医生 上海中山医院', play:'62.4万次播放', cert:'上海中山孙晓明医生鉴真' },
+      { emoji:'❤️', title:'糖尿病合并高血压，心脑血管风险如何评估', author:'罗建平医生 北京人民医院', play:'56.7万次播放', cert:'北京人民罗建平医生鉴真' },
+      { emoji:'🚨', title:'糖尿病酮症酸中毒是什么，怎么识别和处理', author:'黄文涛医生 上海华山医院', play:'51.2万次播放', cert:'上海华山黄文涛医生鉴真' },
+      { emoji:'🧠', title:'糖尿病神经病变有哪些类型，症状如何', author:'孙秀英医生 西安交大一附院', play:'46.8万次播放', cert:'湖南湘雅孙秀英医生鉴真' },
+      { emoji:'🦠', title:'糖尿病患者更容易感染，为什么免疫力会下降', author:'张文涛医生 南京鼓楼医院', play:'42.3万次播放', cert:'南京鼓楼张文涛医生鉴真' },
+      { emoji:'🫀', title:'糖尿病对肝脏的影响，脂肪肝和血糖的关系', author:'李晓明医生 广州珠江医院', play:'37.9万次播放', cert:'广州珠江李晓明医生鉴真' },
+      { emoji:'🦴', title:'糖尿病长期控制不好，对骨骼健康有影响吗', author:'杨雪梅医生 上海仁济医院', play:'32.6万次播放', cert:'上海仁济杨雪梅医生鉴真' },
+    ],
+    '用药': [
+      { emoji:'💊', title:'2型糖尿病常用药物有哪些，各有什么特点', author:'吴国华医生 上海中山医院', play:'148.6万次播放', cert:'上海中山吴国华医生鉴真' },
+      { emoji:'🅱️', title:'二甲双胍为什么是糖尿病一线用药', author:'郭秀英医生 北京协和医院', play:'126.4万次播放', cert:'北京协和郭秀英医生鉴真' },
+      { emoji:'💉', title:'需要打胰岛素了，说明病情很严重吗', author:'赵建平医生 武汉协和医院', play:'108.7万次播放', cert:'武汉协和赵建平医生鉴真' },
+      { emoji:'🌿', title:'糖尿病中医治疗有没有依据，怎么看待', author:'李玉兰医生 南京鼓楼医院', play:'94.2万次播放', cert:'南京鼓楼李玉兰医生鉴真' },
+      { emoji:'🩺', title:'糖尿病患者每年应该做哪些常规检查', author:'孙建军医生 广州南方医院', play:'85.6万次播放', cert:'广州南方孙建军医生鉴真' },
+      { emoji:'🛑', title:'2型糖尿病有可能停药吗，需要满足哪些条件', author:'周海涛医生 广州中山医院', play:'76.3万次播放', cert:'广州中山周海涛医生鉴真' },
+      { emoji:'🧬', title:'GLP-1受体激动剂是什么药，适合哪类糖尿病患者', author:'李文涛医生 湖南湘雅医院', play:'68.9万次播放', cert:'湖南湘雅李文涛医生鉴真' },
+      { emoji:'⏱️', title:'胰岛素种类这么多，长效短效怎么选', author:'赵建平医生 武汉协和医院', play:'62.4万次播放', cert:'北京朝阳赵建平医生鉴真' },
+      { emoji:'✅', title:'血糖控制达标了，还需要继续吃药吗', author:'张慧芳医生 浙江邵逸夫医院', play:'56.8万次播放', cert:'浙江邵逸夫张慧芳医生鉴真' },
+      { emoji:'⚠️', title:'糖尿病用药期间出现副作用，该怎么处理', author:'周晓燕医生 湖南湘雅医院', play:'51.3万次播放', cert:'湖南湘雅周晓燕医生鉴真' },
+      { emoji:'👴', title:'老年糖尿病患者用药有哪些特殊注意事项', author:'张建国医生 四川华西医院', play:'45.7万次播放', cert:'南京鼓楼张建国医生鉴真' },
+      { emoji:'🫘', title:'糖尿病合并肾病，哪些药需要调整剂量或停用', author:'赵建军医生 武汉协和医院', play:'39.2万次播放', cert:'武汉协和赵建军医生鉴真' },
+    ],
+    '其他': [
+      { emoji:'🔄', title:'糖尿病确诊后，生活上需要改变哪些习惯', author:'黄建平医生 沈阳盛京医院', play:'78.4万次播放', cert:'沈阳盛京黄建平医生鉴真' },
+      { emoji:'🏃', title:'糖尿病患者适合做哪些运动，强度怎么把握', author:'刘建平医生 西安交大一附院', play:'72.6万次播放', cert:'北京协和刘建平医生鉴真' },
+      { emoji:'🩸', title:'家用血糖仪怎么用，测量结果怎么看', author:'朱志远医生 北京朝阳医院', play:'65.8万次播放', cert:'北京朝阳朱志远医生鉴真' },
+      { emoji:'🏥', title:'糖尿病挂号挂哪个科，看诊前需要准备什么', author:'郭海涛医生 上海仁济医院', play:'58.3万次播放', cert:'上海仁济郭海涛医生鉴真' },
+      { emoji:'💰', title:'糖尿病相关药物医保可以报销吗', author:'罗建军医生 西安交大一附院', play:'52.7万次播放', cert:'西安交大罗建军医生鉴真' },
+      { emoji:'🧠', title:'糖尿病患者心理压力大怎么办，如何调整状态', author:'周晓明医生 北京人民医院', play:'47.5万次播放', cert:'北京人民周晓明医生鉴真' },
+      { emoji:'📊', title:'血糖监测多久测一次，什么时间点测最准确', author:'高志远医生 上海中山医院', play:'43.2万次播放', cert:'上海中山高志远医生鉴真' },
+      { emoji:'✈️', title:'糖尿病患者出行旅游，需要注意哪些事项', author:'高玉兰医生 武汉协和医院', play:'38.6万次播放', cert:'武汉协和高玉兰医生鉴真' },
+      { emoji:'💼', title:'工作繁忙的糖尿病患者，如何坚持规律用药', author:'朱明辉医生 武汉协和医院', play:'34.2万次播放', cert:'武汉协和朱明辉医生鉴真' },
+      { emoji:'😴', title:'糖尿病患者睡眠质量差，和血糖有关系吗', author:'杨玉兰医生 北京天坛医院', play:'29.8万次播放', cert:'北京天坛杨玉兰医生鉴真' },
+      { emoji:'👨‍👩‍👧', title:'如何和家人沟通糖尿病管理，获得更好的支持', author:'郭明辉医生 上海华山医院', play:'26.4万次播放', cert:'重庆西南郭明辉医生鉴真' },
+      { emoji:'📚', title:'糖尿病教育门诊是什么，有必要去吗', author:'郭雪梅医生 广州南方医院', play:'22.7万次播放', cert:'广州南方郭雪梅医生鉴真' },
+    ],
+  };
+
+  function renderDeptList(card, dept) {
+    const cardId = String(card);
+    const dataSource = cardId === '1' ? card1Data : deptData;
+    const data = dataSource[dept] || [];
+    const items = Array.isArray(data) ? data : (data.items || []);
+    const badges = ['rank-1','rank-2','rank-3','rank-n','rank-n','rank-n','rank-n','rank-n'];
+    const top5 = items.slice(0, 6);
+    const extra = items.slice(6, 12);
+
+    function itemHTML(item, idx) {
+      const badge = badges[idx] || 'rank-n';
+      // 鉴真文案逻辑：「xxx医院xxx等xxx位医生推荐」
+      // 1. 从一组医生姓名池中随机挑选一个（与作者本人姓名不同）
+      // 2. 从一组医院池中随机挑选一个（与作者所在医院不同）
+      // 3. 随机生成 5-20 位医生人数
+      const hospitalPool = [
+        '北京协和医院', '华西医院', '瑞金医院', '北京积水潭医院',
+        '复旦附属医院', '中山大学附属医院', '北大人民医院', '天津肿瘤医院',
+        '安贞医院', '北京天坛医院', '北京儿童医院', '呼研所',
+        '湖南省人民医院', '南京鼓楼医院', '北京朝阳医院', '上海仁济医院',
+        '上海华山医院', '浙江邵逸夫医院', '西安交大一附院', '武汉协和医院',
+        '广州珠江医院', '广州中山医院', '上海中山医院', '广州南方医院',
+        '重庆西南医院', '北京人民医院', '沈阳盛京医院'
+      ];
+      const doctorPool = [
+        '王建华', '李明辉', '张建国', '刘海涛', '陈志远', '刘文涛',
+        '王晓燕', '李秀英', '张文涛', '陈秀芳', '刘建平', '王志强',
+        '李慧芳', '张丽华', '陈国强', '刘永红', '王明辉', '李德明',
+        '张慧敏', '陈玉兰', '刘志远', '王建明', '李秀芳', '张志国',
+        '陈文涛', '刘建华', '王永红', '李文涛', '张建国', '陈志强',
+        '刘秀英', '王慧芳', '李志远', '张建平', '陈德明', '刘国强',
+        '王文涛', '李建华', '张秀芳', '陈建明', '刘永刚', '王志华',
+        '李建明', '张志强', '陈丽华', '刘建明', '王建平', '李永红',
+        '张建明', '陈建平', '刘丽华', '王丽华', '李国华', '张丽',
+        '陈丽', '刘明', '王明', '李华', '张强', '陈伟', '刘伟',
+        '王伟', '李娜', '张丽', '陈静', '刘洋', '王芳', '李军',
+        '张杰', '陈勇', '刘杰', '王勇', '李辉', '张辉', '陈军'
+      ];
+      // 提取作者姓名（去除"医生"和医院）
+      const authorMatch = item.author.match(/^([^ ]+?)医生/);
+      const authorName = authorMatch ? authorMatch[1] : item.author;
+      // 提取作者所在医院
+      const authorHospitalMatch = item.author.match(/ ([^ ]+医院|[^ ]+附属)$/);
+      const authorHospital = authorHospitalMatch ? authorHospitalMatch[1] : '';
+      // 过滤掉与作者相同的医院
+      const filteredHospitals = hospitalPool.filter(h => h !== authorHospital);
+      // 过滤掉与作者相同的医生姓名
+      const filteredDoctors = doctorPool.filter(d => d !== authorName);
+      // 稳定选择：基于 idx 和 cert 哈希
+      const seed = idx + (item.cert ? item.cert.charCodeAt(0) : 0) + (item.cert ? item.cert.charCodeAt(1) || 0 : 0) + (item.cert ? item.cert.charCodeAt(2) || 0 : 0);
+      const selectedHospital = filteredHospitals[seed % filteredHospitals.length];
+      const selectedDoctor = filteredDoctors[(seed * 7 + 3) % filteredDoctors.length];
+      // 5-20 之间的随机人数
+      const docCount = (seed % 16) + 5;
+      const certText = `${selectedHospital}${selectedDoctor}等${docCount}位医生推荐`;
+      return `<div class="content-item">
+        <div class="content-thumb-mock">${item.emoji}<div class="rank-badge ${badge}" style="position:absolute;top:4px;left:4px;background:rgba(0,0,0,0.6);border-radius:3px;padding:0 4px;font-size:11px;">${idx+1}</div></div>
+        <div class="content-info">
+          <div class="play-count" style="margin-top:3px;margin-bottom:4px;"><span class="cert-badge">✦ ${certText}</span></div>
+          <div class="content-title">${item.title}</div>
+          <div class="content-meta"><span>${item.author}</span></div>
+        </div>
+      </div>`;
+    }
+
+    const mainHTML = `<div class="content-grid">${top5.map(item => itemHTML(item, top5.indexOf(item))).join('')}</div>`;
+
+    const extraHTML = `<div class="content-grid" style="margin-top:10px;">${extra.map(item => itemHTML(item, extra.indexOf(item) + 5)).join('')}</div>`;
+
+    document.getElementById('mainContent-' + card).innerHTML = mainHTML;
+    document.getElementById('extraContent-' + card).innerHTML = extraHTML;
+  }
+
+  // 查看更多内容（按卡片独立）
+  function toggleMore(card) {
+    const extra = document.getElementById('extraContent-' + card);
+    const btn   = document.querySelector('.more-btn[data-card="' + card + '"]');
+    const isOpen = extra.classList.contains('show');
+    if (isOpen) {
+      extra.classList.remove('show');
+      btn.classList.remove('expanded');
+      btn.querySelector('span:first-child').textContent = '查看更多内容';
+    } else {
+      extra.classList.add('show');
+      btn.classList.add('expanded');
+      btn.querySelector('span:first-child').textContent = '收起内容';
+    }
+  }
+
+  // 榜单 Tab 切换
+  function toggleMoreAuthors() {
+    const list = document.getElementById('moreAuthorList');
+    const btn = document.getElementById('authorMoreBtn');
+    const expanded = list.style.display !== 'none';
+    list.style.display = expanded ? 'none' : 'block';
+    btn.textContent = expanded ? '查看更多作者 ›' : '收起 ›';
+  }
+
+  function toggleMoreExperts() {
+    const list = document.getElementById('moreExpertList');
+    const btn = document.getElementById('expertMoreBtn');
+    const expanded = list.style.display !== 'none';
+    list.style.display = expanded ? 'none' : 'block';
+    btn.textContent = expanded ? '查看更多专家 ›' : '收起 ›';
+  }
+
+  function switchRankTab(el, paneId) {
+    document.querySelectorAll('.ranking-tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.ranking-tab-pane').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById(paneId).classList.add('active');
+  }
+
+  // 页面加载时分别为两张内容卡片渲染默认科室
+  renderDeptList(1, '症状');
+  renderDeptList(2, '内科');
+
+  // 医生区块：横向头像列表，所有科室医生合并展示，右上角查看更多
+  const allDoctors = Object.values(deptData).flatMap(d => d.doctors)
+    .filter((d, i, arr) => arr.findIndex(x => x.name === d.name) === i); // 去重
+
+  function renderDoctorRow(showAll) {
+    const visible = showAll ? allDoctors : allDoctors.slice(0, 6);
+    document.getElementById('doctorList').innerHTML = `
+      <div class="doctor-header">
+        <span class="doctor-header-title">本内容由以下医生推荐</span>
+        <button class="doctor-more-btn" onclick="location.href='doctors.html'">查看更多 ›</button>
+      </div>
+      <div class="doctor-avatar-row">
+        ${visible.map(d => `
+          <div class="doctor-avatar-item">
+            <div class="doctor-avatar">${d.emoji}</div>
+            <div class="doctor-avatar-name">${d.name}</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+  renderDoctorRow(false);
+</script>
+</body>
+</html>
